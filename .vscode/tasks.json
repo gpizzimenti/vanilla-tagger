@@ -1,0 +1,14 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "babel-compile-ES5",
+            "type": "shell",
+            "command": "${workspaceFolder}/node_modules/.bin/babel",
+            "args": ["scripts", "--out-dir", "dist", "-w", "--source-maps", "--out-file-extension", ".es5.js","--presets","@babel/preset-env","--plugins","@babel/transform-runtime"],
+            "isBackground": true
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+:host {
+    --white:rgba(255, 255, 255, 1);
+    --red:rgba(255, 0, 0, 0.8);
+    --point-size: 40px;
+}
+
+.point {
+    opacity: .8; 
+    transform: translate(-50%, -50%);
+    outline: none; 
+    user-select: none; 
+    text-align: center; 
+    width: var(--point-size);      
+    height: var(--point-size);      
+    border: none; 
+    font-weight: bold; 
+    font-size: 20px; 
+    border-radius: 100%; 
+    cursor: pointer; 
+}
+
+.red {
+    background-color: var(--red);     
+    color: var(--white); 
+}
+
+.red.pulsating {
+    animation: fadeIn .5s, red-pulse 1.5s infinite;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+ @keyframes fadeOut {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes red-pulse {
+    from { box-shadow: 0 0 0 0px var(--red); }
+    to { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
+}
+  
+  
