@@ -1,21 +1,68 @@
 <!DOCTYPE html>
 <html>
    <head>
+
       <script type="module" src="scripts/vanilla-tagger.webc.js" async></script>
+   
    </head>
    <body>
+
       <vanilla-tagger 
+         id="v-tagger"
          data-img='https://images.unsplash.com/photo-1493134799591-2c9eed26201a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
          data-tags='[{
-                      "type": "point", 
-                      "top": 20,
-                      "left": 20,
-                      "classes": "red pulsating",
+                        "top": 20,
+                        "left": 20,
+                        "classes": "dot bright with-border show-index-on-top",
+                        "link": {"href":"http://www.tv2000.it/", "target":"_blank"}
+                     },{
+                      "top": 36.5693,
+                      "left": 52.5,
+                      "classes": "dot red pulsating",
                       "link": {"href":"http://www.webseed.it/", "target":"_blank"}
+                     },{
+                        "top": 44.7584,
+                        "left": 29.625,
+                        "classes": "dot green pulsating responsive show-index",
+                        "link": {"href":"http://www.iandu.it/", "target":"_blank"}
+                     },{
+                        "top": 12.3792,
+                        "left": 68.375,
+                        "classes": "dot blue pulsating small",
+                        "link": {"href":"http://www.chiesacattolica.it/", "target":"_blank"}
+                     },{
+                        "top": 80,
+                        "left": 20,
+                        "classes": "dot dark with-border with-shadow show-index",
+                        "link": {"href":"http://www.tv2000.it/", "target":"_blank"}
                      }]'
-                     >
+      >
             Your browser doesn't currently support this component<br>
             <a href="https://browsehappy.com/" target="_blank">Please , update your browser</a>
       </vanilla-tagger>
+
+
+      <script>
+	   	let tagger = document.getElementById("v-tagger");
+
+             tagger.addEventListener('VanillaTagger:componentCreated',function (e) { 
+               console.log("Component created: " + e.target.id);
+             });
+
+             tagger.addEventListener('VanillaTagger:imgLoaded',function (e) { 
+               console.log("Image loaded: " + JSON.stringify(e.detail));
+             });
+
+             tagger.addEventListener('VanillaTagger:tagAdded',function (e) { 
+               console.log("Tag added: " + JSON.stringify(e.detail));
+             });
+
+             tagger.addEventListener('VanillaTagger:tagsLoaded',function (e) { 
+               console.log("Tags loaded: " + JSON.stringify(e.detail));
+             });
+
+
+      </script>
+
    </body>
 </html

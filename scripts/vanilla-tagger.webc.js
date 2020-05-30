@@ -59,12 +59,13 @@ class VanillaTagger extends HTMLElement {
         super();
         host = this,
         host.attachShadow({mode: "open"});
-    }
+}
 
 /*-----------------------------------------------------------------------------------------*/    
 
     connectedCallback() {
         host._createComponent();
+        host._throwsEvent("componentCreated");     
     }    
 
 /*-----------------------------------------------------------------------------------------*/
@@ -83,14 +84,23 @@ class VanillaTagger extends HTMLElement {
         host.shadowRoot.appendChild(wrapper);
 
         host._loadImage()
-            .then( host._loadTags );  
+            .then(host._loadTags);  
+    }
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    _throwsEvent(name,data) {
+       
+        let evt = new CustomEvent("VanillaTagger:" + name , {'bubbles': true , 'detail': data });
+
+        host.dispatchEvent(evt);
     }
     
 /*-----------------------------------------------------------------------------------------*/    
 
     async _loadImage() {
 
-        if (!host.dataset.img)  throw new VanillaTaggerError('Missing attribute => data-img');
+        if (!host.dataset.img)  return true;
         
         wrapper.classList.add("imgLoading");
 
@@ -102,6 +112,8 @@ class VanillaTagger extends HTMLElement {
                                 .finally(() => {
                                     wrapper.classList.remove("imgLoading");
                                 });  
+
+        host._throwsEvent("imgLoaded",{src: imgObj.src, width: imgObj.width, height: imgObj});     
 
         wrapper.classList.add("imgLoaded");                                
 
@@ -125,16 +137,16 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _loadTags() {
-        if (!host.dataset.tags)  throw new VanillaTaggerError('Missing attribute => data-tags');
-
         try {
              tags = JSON.parse(host.dataset.tags);
 
-             tags.forEach(function (tag, index) {
-                tag.index = index; 
-                host._addTag(tag,index);
+             tags.forEach(function (tag,index) {
+                tag.index = index+1; 
+                host._addTag(tag);
              });
- 
+
+             host._throwsEvent("tagsLoaded",tags);     
+
         } catch(err) {
              throw new VanillaTaggerError(`Error parsing tags data => ${err}`)
         }        
@@ -145,8 +157,8 @@ class VanillaTagger extends HTMLElement {
     _addTag(tag) {
         try {
             let a = document.createElement("a");
-            a.dataset.index=tag.index;
-            a.classList.add("tag", tag.type);
+            a.classList.add("tag");
+            a.dataset.index = tag.index;
             a.style.top = `${tag.top}%`;
             a.style.left = `${tag.left}%`;
 
@@ -162,6 +174,8 @@ class VanillaTagger extends HTMLElement {
             };
         
             wrapper.appendChild(a);
+
+            host._throwsEvent("tagAdded",tag);     
 
             } catch(err) {
                 console.warn("Can't render tag:" + JSON.stringify(tag));
