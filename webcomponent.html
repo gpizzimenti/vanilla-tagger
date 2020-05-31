@@ -7,6 +7,9 @@
    </head>
    <body>
 
+      <h1>See source & console for tags configuration & events</h1>
+
+
       <vanilla-tagger 
          id="v-tagger"
          data-img='https://images.unsplash.com/photo-1493134799591-2c9eed26201a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
@@ -48,17 +51,23 @@
              tagger.addEventListener('VanillaTagger:componentCreated',function (e) { 
                console.log("Component created: " + e.target.id);
              });
-
              tagger.addEventListener('VanillaTagger:imgLoaded',function (e) { 
                console.log("Image loaded: " + JSON.stringify(e.detail));
              });
-
              tagger.addEventListener('VanillaTagger:tagAdded',function (e) { 
                console.log("Tag added: " + JSON.stringify(e.detail));
              });
-
              tagger.addEventListener('VanillaTagger:tagsLoaded',function (e) { 
                console.log("Tags loaded: " + JSON.stringify(e.detail));
+             });
+             tagger.addEventListener('VanillaTagger:tagClick',function (e) { 
+               console.log("Tag clicked: " + JSON.stringify(e.detail));
+             });
+             tagger.addEventListener('VanillaTagger:tagMouseover',function (e) { 
+               console.log("Tag mouse over: " + JSON.stringify(e.detail));
+             });
+             tagger.addEventListener('VanillaTagger:tagMouseout',function (e) { 
+               console.log("Tag mouse out: " + JSON.stringify(e.detail));
              });
 
 

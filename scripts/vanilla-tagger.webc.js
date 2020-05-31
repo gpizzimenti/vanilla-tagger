@@ -100,8 +100,11 @@ class VanillaTagger extends HTMLElement {
 
     async _loadImage() {
 
-        if (!host.dataset.img)  return true;
-        
+        if (!host.dataset.img)  {
+            console.warn("No attribute data-img found");
+            return true;
+        }
+
         wrapper.classList.add("imgLoading");
 
         const imgObj = await host._fetchImage(host.dataset.img)
@@ -113,7 +116,7 @@ class VanillaTagger extends HTMLElement {
                                     wrapper.classList.remove("imgLoading");
                                 });  
 
-        host._throwsEvent("imgLoaded",{src: imgObj.src, width: imgObj.width, height: imgObj});     
+        host._throwsEvent("imgLoaded",{src: imgObj.src, width: imgObj.width, height: imgObj.height});     
 
         wrapper.classList.add("imgLoaded");                                
 
@@ -137,6 +140,11 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _loadTags() {
+        if (!host.dataset.tags)  {
+            console.warn("No attribute data-tags found");
+            return true;
+        }
+
         try {
              tags = JSON.parse(host.dataset.tags);
 
@@ -172,6 +180,10 @@ class VanillaTagger extends HTMLElement {
                     a.classList.add(cl);
                 });
             };
+
+            a.addEventListener('click',function (e) {host._throwsEvent("tagClick",tag);});
+            a.addEventListener('mouseover',function (e) {host._throwsEvent("tagMouseover",tag);});
+            a.addEventListener('mouseout',function (e) {host._throwsEvent("tagMouseout",tag);});
         
             wrapper.appendChild(a);
 
