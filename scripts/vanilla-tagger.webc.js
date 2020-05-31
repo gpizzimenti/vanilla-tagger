@@ -239,9 +239,7 @@ class VanillaTagger extends HTMLElement {
                             const  fname = tag["on"+eventName],
                                    f  =  window[fname]; 
 
-                            if (typeof f === "function") {
-                                f(tag);
-                            }
+                            if (typeof f === "function") f(tag);
                         }
                     });
 

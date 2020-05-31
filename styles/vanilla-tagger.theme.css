@@ -62,13 +62,13 @@
 
 
 .red.pulsating {
-    animation: fadeIn .5s, red-pulse 1.5s infinite;
+    animation: red-pulse 1.5s infinite;
 }
 .green.pulsating {
-    animation: fadeIn .5s, green-pulse 1.5s infinite;
+    animation: green-pulse 1.5s infinite;
 }
 .blue.pulsating {
-    animation: fadeIn .5s, blue-pulse 1.5s infinite;
+    animation: blue-pulse 1.5s infinite;
 }
 
 .dot.small {
