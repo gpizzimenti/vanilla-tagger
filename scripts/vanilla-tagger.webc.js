@@ -65,7 +65,6 @@ class VanillaTagger extends HTMLElement {
 
     connectedCallback() {
         host._createComponent();
-        host._throwsEvent("componentCreated");     
     }    
 
 /*-----------------------------------------------------------------------------------------*/
@@ -83,6 +82,8 @@ class VanillaTagger extends HTMLElement {
         wrapper.classList.add("wrapper");
         host.shadowRoot.appendChild(wrapper);
 
+        host._throwsEvent("componentCreated");     
+                
         host._loadImage()
             .then(host._loadTags);  
     }
@@ -163,7 +164,7 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _addTag(tag) {
-        
+
         try {
             let a = document.createElement("a");
 
@@ -232,7 +233,16 @@ class VanillaTagger extends HTMLElement {
                     element.addEventListener(eventName,function (e) {
                         host._throwsEvent(eventNameToThrow,tag);
 
-                        if (tag["on"+eventName] )   eval(tag["on"+eventName])(tag); 
+                        if (tag["on"+eventName])  {
+                            //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for security concerns
+
+                            const  fname = tag["on"+eventName],
+                                   f  =  window[fname]; 
+
+                            if (typeof f === "function") {
+                                f(tag);
+                            }
+                        }
                     });
 
                 });
