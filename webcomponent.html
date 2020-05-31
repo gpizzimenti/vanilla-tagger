@@ -3,7 +3,15 @@
    <head>
 
       <script type="module" src="scripts/vanilla-tagger.webc.js" async></script>
-   
+
+      <script>
+
+          function tagVerde(tag) {
+                  alert('The "' + tag.id + '" tag has functionalities attached to the mouseover/mouseout events via event listeners, and to the click event via the "onclick" trigger in the tag definition');
+          };
+
+      </script>
+  
    </head>
    <body>
 
@@ -17,21 +25,22 @@
                         "top": 20,
                         "left": 20,
                         "classes": "dot bright with-border show-index-on-top",
-                        "link": {"href":"http://www.tv2000.it/", "target":"_blank"}
+                        "link": {"href":"http://www.iandu.it/", "target":"_blank"}
                      },{
                       "top": 36.5693,
                       "left": 52.5,
                       "classes": "dot red pulsating",
                       "link": {"href":"http://www.webseed.it/", "target":"_blank"}
                      },{
+                        "id" : "tagVerde",
                         "top": 44.7584,
                         "left": 29.625,
-                        "classes": "dot green pulsating responsive show-index",
-                        "link": {"href":"http://www.iandu.it/", "target":"_blank"}
+                        "classes": "dot green responsive show-index",
+                        "onclick" : "tagVerde"
                      },{
                         "top": 12.3792,
                         "left": 68.375,
-                        "classes": "dot blue pulsating small",
+                        "classes": "dot blue small",
                         "link": {"href":"http://www.chiesacattolica.it/", "target":"_blank"}
                      },{
                         "top": 80,
@@ -51,25 +60,44 @@
              tagger.addEventListener('VanillaTagger:componentCreated',function (e) { 
                console.log("Component created: " + e.target.id);
              });
+
              tagger.addEventListener('VanillaTagger:imgLoaded',function (e) { 
                console.log("Image loaded: " + JSON.stringify(e.detail));
              });
+
              tagger.addEventListener('VanillaTagger:tagAdded',function (e) { 
                console.log("Tag added: " + JSON.stringify(e.detail));
              });
+
              tagger.addEventListener('VanillaTagger:tagsLoaded',function (e) { 
                console.log("Tags loaded: " + JSON.stringify(e.detail));
              });
+
              tagger.addEventListener('VanillaTagger:tagClick',function (e) { 
                console.log("Tag clicked: " + JSON.stringify(e.detail));
              });
+
              tagger.addEventListener('VanillaTagger:tagMouseover',function (e) { 
                console.log("Tag mouse over: " + JSON.stringify(e.detail));
-             });
-             tagger.addEventListener('VanillaTagger:tagMouseout',function (e) { 
-               console.log("Tag mouse out: " + JSON.stringify(e.detail));
+
+               const tag = e.detail;
+               
+               if (tag.id == "tagVerde") { 
+                   elem = tag.element; 
+                   elem.classList.add("pulsating");
+               }    
              });
 
+             tagger.addEventListener('VanillaTagger:tagMouseout',function (e) { 
+               console.log("Tag mouse out: " + JSON.stringify(e.detail));
+
+               const tag = e.detail;
+               
+               if (tag.id == "tagVerde") { 
+                   elem = tag.element; 
+                   elem.classList.remove("pulsating");
+               }    
+             });
 
       </script>
 

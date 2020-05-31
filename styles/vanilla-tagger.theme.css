@@ -109,6 +109,7 @@
     line-height: 16px;
     height: 16px;
     padding: 0 5px;
+    font-family: sans-serif;
     font-size: var(--dot-font-size-small);
     color: rgba(var(--white),1);      
     text-shadow: 0 1px rgba(var(--grey),.7);      

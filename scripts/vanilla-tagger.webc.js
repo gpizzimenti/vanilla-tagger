@@ -102,7 +102,7 @@ class VanillaTagger extends HTMLElement {
 
         if (!host.dataset.img)  {
             console.warn("No attribute data-img found");
-            return true;
+            return false;
         }
 
         wrapper.classList.add("imgLoading");
@@ -142,7 +142,7 @@ class VanillaTagger extends HTMLElement {
     _loadTags() {
         if (!host.dataset.tags)  {
             console.warn("No attribute data-tags found");
-            return true;
+            return false;
         }
 
         try {
@@ -163,28 +163,14 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _addTag(tag) {
+        
         try {
             let a = document.createElement("a");
-            a.classList.add("tag");
-            a.dataset.index = tag.index;
-            a.style.top = `${tag.top}%`;
-            a.style.left = `${tag.left}%`;
 
-            if (tag.link && tag.link.href) {
-                a.setAttribute("href",tag.link.href);
-                if (tag.link.target) a.setAttribute("target",tag.link.target);
-            };
+            host._attachProperties(a,tag);
 
-            if (tag.classes) {
-                tag.classes.split(" ").forEach(function (cl, index) {
-                    a.classList.add(cl);
-                });
-            };
+            host._attachEvents("click mouseover mouseout",a,tag);
 
-            a.addEventListener('click',function (e) {host._throwsEvent("tagClick",tag);});
-            a.addEventListener('mouseover',function (e) {host._throwsEvent("tagMouseover",tag);});
-            a.addEventListener('mouseout',function (e) {host._throwsEvent("tagMouseout",tag);});
-        
             wrapper.appendChild(a);
 
             host._throwsEvent("tagAdded",tag);     
@@ -192,6 +178,70 @@ class VanillaTagger extends HTMLElement {
             } catch(err) {
                 console.warn("Can't render tag:" + JSON.stringify(tag));
                 throw new VanillaTaggerError(`Error rendering tag => ${err}`);
+        }        
+    }
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    _attachProperties(element, tag) {
+
+        try {
+
+            element.classList.add("tag");
+            element.dataset.index = tag.index;
+            element.style.top = `${tag.top}%`;
+            element.style.left = `${tag.left}%`;
+
+            if (!tag.id) {
+                tag.id = "tag-" + tag.index; 
+            };
+
+            element.setAttribute("id",tag.id);
+
+            if (tag.classes) {
+                tag.classes.split(" ").forEach(function (cl, index) {
+                    element.classList.add(cl);
+                });
+            };
+
+            if (tag.link && tag.link.href) {
+                element.setAttribute("href",tag.link.href);
+                if (tag.link.target) element.setAttribute("target",tag.link.target);
+            };
+        
+        } catch(err) {
+            console.warn("Can't attach properties to tag:" + JSON.stringify(tag));
+            throw new VanillaTaggerError(`Error attaching properties to tag => ${err}`);
+        }
+
+    }
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    _attachEvents(eventNames, element, tag) {
+
+        try {
+
+            tag.element = element;
+
+            if (eventNames) {
+                eventNames.split(" ").forEach(function (evt, index) {
+                    let eventName = evt,
+                        eventNameToThrow = "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+
+                    element.addEventListener(eventName,function (e) {
+                        host._throwsEvent(eventNameToThrow,tag);
+
+                        if (tag["on"+eventName] )   eval(tag["on"+eventName])(tag); 
+                    });
+
+                });
+            };
+
+        
+        } catch(err) {
+            console.warn("Can't attach events to tag:" + JSON.stringify(tag));
+            throw new VanillaTaggerError(`Error attaching events to tag => ${err}`);
         }        
     }
 
