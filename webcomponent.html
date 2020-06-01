@@ -12,15 +12,19 @@
 
           function redTagHelper(tag) {
                   let element = tag.element,
-                      choice =  (tag.element.classList.contains("icon-marker") ? "remove the icon from" : "add the icon to"),
-                      question = "Would you like to " + choice + " the tag?",
-                      action = (element.classList.contains("icon-marker") ? "remove" : "add"),
+                      choice =  (tag.element.classList.contains("shape-marker") ? "a marker icon" : "a marker shape"),
+                      question = "Would you like a " + choice + " for this tag?",
+                      action = (element.classList.contains("shape-marker") ? "icon" : "shape"),
                       decision = confirm(question);
 
-                      if (decision && action==="remove")
+                      if (decision && action==="shape") {
                           element.classList.remove("icon-marker");
-                      else if (decision && action==="add")
-                        element.classList.add("icon-marker");
+                          element.classList.add("shape-marker");
+                      }    
+                      else if (decision && action==="icon") {
+                          element.classList.add("icon-marker");
+                          element.classList.remove("shape-marker");
+                      }    
           };
 
 
