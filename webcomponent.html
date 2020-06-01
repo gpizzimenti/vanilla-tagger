@@ -10,6 +10,20 @@
                   alert('The "' + tag.id + '" tag has functions attached to the mouseover/mouseout events via event listeners, and to the click event via the "onclick" trigger in the tag definition');
           };
 
+          function redTagHelper(tag) {
+                  let element = tag.element,
+                      choice =  (tag.element.classList.contains("icon-marker") ? "remove the icon from" : "add the icon to"),
+                      question = "Would you like to " + choice + " the tag?",
+                      action = (element.classList.contains("icon-marker") ? "remove" : "add"),
+                      decision = confirm(question);
+
+                      if (decision && action==="remove")
+                          element.classList.remove("icon-marker");
+                      else if (decision && action==="add")
+                        element.classList.add("icon-marker");
+          };
+
+
       </script>
   
    </head>
@@ -28,7 +42,8 @@
                      },{
                       "top": 36.5693,
                       "left": 52.5,
-                      "classes": "dot red pulsating"
+                      "classes": "dot red pulsating",
+                      "onclick" : "redTagHelper"           
                      },{
                         "id" : "greenTag",
                         "top": 44.7584,
@@ -38,7 +53,7 @@
                      },{
                         "top": 12.3792,
                         "left": 68.375,
-                        "classes": "dot blue small pulsating"
+                        "classes": "dot blue small pulsating"             
                      },{
                         "top": 80,
                         "left": 20,
