@@ -117,13 +117,13 @@ class VanillaTagger extends HTMLElement {
                                     wrapper.classList.remove("imgLoading");
                                 });  
 
-        host._throwsEvent("imgLoaded",{src: imgObj.src, width: imgObj.width, height: imgObj.height});     
-
         wrapper.classList.add("imgLoaded");                                
 
         let img = document.createElement("img");
         img.setAttribute("src",imgObj.src)
         wrapper.appendChild(img);
+
+        host._throwsEvent("imgLoaded",{src: imgObj.src, width: imgObj.width, height: imgObj.height});     
 
     }    
 
@@ -166,13 +166,13 @@ class VanillaTagger extends HTMLElement {
     _addTag(tag) {
 
         try {
-            let a = document.createElement("a");
+            let element = document.createElement("a");
 
-            host._attachProperties(a,tag);
+            host._attachProperties(element,tag);
 
-            host._attachEvents("click mouseover mouseout",a,tag);
+            host._attachEvents("click mouseover mouseout",element,tag);
 
-            wrapper.appendChild(a);
+            wrapper.appendChild(element);
 
             host._throwsEvent("tagAdded",tag);     
 
@@ -209,6 +209,8 @@ class VanillaTagger extends HTMLElement {
                 element.setAttribute("href",tag.link.href);
                 if (tag.link.target) element.setAttribute("target",tag.link.target);
             };
+
+            tag.element = element;
         
         } catch(err) {
             console.warn("Can't attach properties to tag:" + JSON.stringify(tag));
@@ -223,8 +225,6 @@ class VanillaTagger extends HTMLElement {
 
         try {
 
-            tag.element = element;
-
             if (eventNames) {
                 eventNames.split(" ").forEach(function (evt, index) {
                     let eventName = evt,
@@ -233,13 +233,15 @@ class VanillaTagger extends HTMLElement {
                     element.addEventListener(eventName,function (e) {
                         host._throwsEvent(eventNameToThrow,tag);
 
+                        if (eventName === "click") element.classList.toggle('toggled');
+
                         if (tag["on"+eventName])  {
-                            //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for security concerns
+                            //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for well known security concerns
 
                             const  fname = tag["on"+eventName],
                                    f  =  window[fname]; 
 
-                            if (typeof f === "function") f(tag);
+                            if (f && typeof f === "function") f(tag);
                         }
                     });
 

@@ -6,7 +6,7 @@
 
       <script>
 
-          function tagVerde(tag) {
+          function greenTagHelper(tag) {
                   alert('The "' + tag.id + '" tag has functions attached to the mouseover/mouseout events via event listeners, and to the click event via the "onclick" trigger in the tag definition');
           };
 
@@ -24,29 +24,26 @@
          data-tags='[{
                         "top": 20,
                         "left": 20,
-                        "classes": "dot bright with-border show-index-on-top",
-                        "link": {"href":"http://www.iandu.it/", "target":"_blank"}
+                        "classes": "dot light with-border pulsating-onhover show-index-on-top",
+                        "link": {"href":"https://www.linkedin.com/in/giuseppepizzimenti/", "target":"_blank"}
                      },{
                       "top": 36.5693,
                       "left": 52.5,
-                      "classes": "dot red pulsating",
-                      "link": {"href":"http://www.webseed.it/", "target":"_blank"}
+                      "classes": "dot red pulsating"
                      },{
-                        "id" : "tagVerde",
+                        "id" : "greenTag",
                         "top": 44.7584,
                         "left": 29.625,
                         "classes": "dot green responsive show-index",
-                        "onclick" : "tagVerde"
+                        "onclick" : "greenTagHelper"
                      },{
                         "top": 12.3792,
                         "left": 68.375,
-                        "classes": "dot blue small pulsating",
-                        "link": {"href":"http://www.chiesacattolica.it/", "target":"_blank"}
+                        "classes": "dot blue small pulsating"
                      },{
                         "top": 80,
                         "left": 20,
-                        "classes": "dot dark with-border with-shadow show-index",
-                        "link": {"href":"http://www.tv2000.it/", "target":"_blank"}
+                        "classes": "dot dark with-border with-shadow show-index"
                      }]'
       >
             Your browser doesn't currently support this component<br>
@@ -82,7 +79,7 @@
 
                const tag = e.detail;
                
-               if (tag.id == "tagVerde") { 
+               if (tag.id == "greenTag") { 
                    elem = tag.element; 
                    elem.classList.add("pulsating");
                }    
@@ -93,7 +90,7 @@
 
                const tag = e.detail;
                
-               if (tag.id == "tagVerde") { 
+               if (tag.id == "greenTag") { 
                    elem = tag.element; 
                    elem.classList.remove("pulsating");
                }    

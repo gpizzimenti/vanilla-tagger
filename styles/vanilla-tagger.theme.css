@@ -41,7 +41,7 @@
     background-color: rgba(var(--blue),.5);     
     color: rgba(var(--white),1); 
 }
-.bright {
+.light {
     border-color: rgba(var(--grey),1);     
     background-color: rgba(var(--white),.5);     
     color: rgba(var(--grey),1); 
@@ -61,15 +61,30 @@
 }
 
 
-.red.pulsating {
+.red.pulsating, 
+.red.pulsating-onhover:hover,
+.blue.pulsating-onfocus:focus {
     animation: red-pulse 1.5s infinite;
 }
-.green.pulsating {
+.green.pulsating, 
+.green.pulsating-onhover:hover,
+.green.pulsating-onfocus:focus {
     animation: green-pulse 1.5s infinite;
 }
-.blue.pulsating {
+.blue.pulsating, 
+.blue.pulsating-onhover:hover,
+.blue.pulsating-onfocus:focus {
     animation: blue-pulse 1.5s infinite;
 }
+.dark.pulsating, 
+.dark.pulsating-onhover:hover,
+.dark.pulsating-onfocus:focus,
+.light.pulsating, 
+.light.pulsating-onhover:hover,
+.light.pulsating-onfocus:focus {
+    animation: grey-pulse 1.5s infinite;
+}
+
 
 .dot.small {
     width: var(--dot-size-small);      
@@ -134,20 +149,12 @@
     background-image: linear-gradient(to bottom, rgba(var(--blue),1) ,rgba(var(--blue-dark),1));    
 }
 .dot.dark.show-index-on-top::after,
-.dot.bright.show-index-on-top::after {
+.dot.light.show-index-on-top::after {
     background: rgba(var(--grey-dark),1);
     border-color: rgba(var(--grey-dark),1);
     background-image: linear-gradient(to bottom, rgba(var(--grey),1) ,rgba(var(--grey-dark),1));    
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
- @keyframes fadeOut {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
 @keyframes red-pulse {
     from { box-shadow: 0 0 0 0px rgba(var(--red),8); }
     to { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
@@ -158,6 +165,10 @@
 }
 @keyframes blue-pulse {
     from { box-shadow: 0 0 0 0px rgba(var(--blue),.8); }
+    to { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
+}
+@keyframes grey-pulse {
+    from { box-shadow: 0 0 0 0px rgba(var(--grey),8); }
     to { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
 }
   
