@@ -223,17 +223,19 @@
     height: var(--dot-size);      
     border-radius: 100%;     
     background-color: rgba(var(--white),1);    
-    mask-repeat: no-repeat;
-    mask-position: center center;
-    mask-size: 60%;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center center;
     -webkit-mask-size: 60%;
+    mask-repeat: no-repeat;
+    mask-position: center center;
+    mask-size: 60%;
 }
 
 .dot[class^='shape-'], .dot[class*=' shape-'] {
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center center;
+    mask-repeat: no-repeat;
+    mask-position: center center;
 }
 
 
