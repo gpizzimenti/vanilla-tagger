@@ -225,7 +225,7 @@
     background-color: rgba(var(--white),1);    
     mask-repeat: no-repeat;
     mask-position: center center;
-    mask-size: contain;
+    mask-size: 60%;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center center;
     -webkit-mask-size: 60%;
