@@ -4,7 +4,7 @@
 
 /*-----------------------------------------------------------------------------------------*/
 
-let host, wrapper, tags;
+let host, wrapper, tags = [], elements = [];
 
 /*-----------------------------------------------------------------------------------------*/
 
@@ -15,6 +15,8 @@ const baseStyle = `
         object-fit: fill;        
         box-sizing: border-box;
     }
+
+    :host([hidden]) { display: none }
 
     .wrapper, .wrapper > img {
         display: block;
@@ -84,6 +86,7 @@ class VanillaTagger extends HTMLElement {
 
         host._throwsEvent("componentCreated");     
                 
+        //we don't use slotted elements, to achieve maximum incapsulation  
         host._loadImage()
             .then(host._loadTags);  
     }
@@ -99,16 +102,16 @@ class VanillaTagger extends HTMLElement {
     
 /*-----------------------------------------------------------------------------------------*/    
 
-    async _loadImage() {
+    async _loadImage(src) {
 
-        if (!host.dataset.img)  {
-            console.warn("No attribute data-img found");
+        if (!src && !host.dataset.img)  {
+            console.warn("No attribute 'data-img' found nor 'src' parameter passed to method 'loadImage'");
             return false;
         }
 
         wrapper.classList.add("imgLoading");
 
-        const imgObj = await host._fetchImage(host.dataset.img)
+        const imgObj = await host._fetchImage(src || host.dataset.img)
                                 .catch(() => {
                                     wrapper.classList.add("imgMissing");
                                     throw new VanillaTaggerError(`Can't load image => ${host.dataset.img}`);
@@ -140,14 +143,14 @@ class VanillaTagger extends HTMLElement {
 
 /*-----------------------------------------------------------------------------------------*/    
 
-    _loadTags() {
-        if (!host.dataset.tags)  {
-            console.warn("No attribute data-tags found");
+    _loadTags(jsonTags) {
+        if (!jsonTags && !host.dataset.tags)  {
+            console.warn("No attribute 'data-tags' found nor 'tags' parameter passed to method 'loadTags'");            
             return false;
         }
 
         try {
-             tags = JSON.parse(host.dataset.tags);
+             tags = (jsonTags ? jsonTags : JSON.parse(host.dataset.tags));
 
              tags.forEach(function (tag,index) {
                 tag.index = index+1; 
@@ -173,6 +176,8 @@ class VanillaTagger extends HTMLElement {
             host._attachEvents("click mouseover mouseout",element,tag);
 
             wrapper.appendChild(element);
+
+            elements.push(element);
 
             host._throwsEvent("tagAdded",tag);     
 
