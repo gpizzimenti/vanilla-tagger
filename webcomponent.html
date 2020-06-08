@@ -11,19 +11,18 @@
           };
 
           function redTagHelper(tag) {
-                  let element = tag.element,
-                      choice =  (tag.element.classList.contains("shape-marker") ? "a marker icon" : "a marker shape"),
+                  let choice =  (tag.hasClass("shape-marker") ? "a marker icon" : "a marker shape"),
                       question = "Would you like a " + choice + " for this tag?",
-                      action = (element.classList.contains("shape-marker") ? "icon" : "shape"),
+                      action = (tag.hasClass("shape-marker") ? "icon" : "shape"),
                       decision = confirm(question);
 
                       if (decision && action==="shape") {
-                          element.classList.remove("icon-marker");
-                          element.classList.add("shape-marker");
+                          tag.removeClass("icon-marker");
+                          tag.addClass("shape-marker");
                       }    
                       else if (decision && action==="icon") {
-                          element.classList.add("icon-marker");
-                          element.classList.remove("shape-marker");
+                          tag.removeClass("shape-marker");
+                          tag.addClass("icon-marker");
                       }    
           };
 
@@ -98,8 +97,7 @@
                const tag = e.detail;
                
                if (tag.id == "greenTag") { 
-                   elem = tag.element; 
-                   elem.classList.add("pulsating");
+                   tag.addClass("pulsating");
                }    
              });
 
@@ -109,8 +107,7 @@
                const tag = e.detail;
                
                if (tag.id == "greenTag") { 
-                   elem = tag.element; 
-                   elem.classList.remove("pulsating");
+                   tag.addClass("pulsating");
                }    
              });
 

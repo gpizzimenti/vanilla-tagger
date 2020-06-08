@@ -12,7 +12,6 @@ const baseStyle = `
 
     :host{
         display: inline-block;
-        object-fit: fill;        
         box-sizing: border-box;
     }
 
@@ -57,6 +56,10 @@ class VanillaTaggerError extends Error {
 
 class VanillaTagger extends HTMLElement {
 
+    static get observedAttributes() {
+        return ['data-img', 'data-tags'];
+    }    
+
     constructor() {
         super();
         host = this,
@@ -67,6 +70,18 @@ class VanillaTagger extends HTMLElement {
 
     connectedCallback() {
         host._createComponent();
+    }    
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    attributeChangedCallback(name, oldValue, newValue) { 
+
+        if (oldValue === newValue || host.classList.contains("updating") || !wrapper) return false;
+
+        if(name === "data-img")
+            host._loadImage();
+        else if(name === "data-tags")
+            host._loadTags(undefined,true);
     }    
 
 /*-----------------------------------------------------------------------------------------*/
@@ -94,7 +109,7 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _throwsEvent(name,data) {
-       
+
         let evt = new CustomEvent("VanillaTagger:" + name , {'bubbles': true , 'detail': data });
 
         host.dispatchEvent(evt);
@@ -122,7 +137,7 @@ class VanillaTagger extends HTMLElement {
 
         wrapper.classList.add("imgLoaded");                                
 
-        let img = document.createElement("img");
+        let img = wrapper.querySelector("img") || document.createElement("img");
         img.setAttribute("src",imgObj.src)
         wrapper.appendChild(img);
 
@@ -143,27 +158,56 @@ class VanillaTagger extends HTMLElement {
 
 /*-----------------------------------------------------------------------------------------*/    
 
-    _loadTags(jsonTags) {
+    _loadTags(jsonTags, reset) {
+        if (reset) {
+            host._resetTags();
+        }
+
         if (!jsonTags && !host.dataset.tags)  {
             console.warn("No attribute 'data-tags' found nor 'tags' parameter passed to method 'loadTags'");            
             return false;
         }
 
-        try {
+        try { 
              tags = (jsonTags ? jsonTags : JSON.parse(host.dataset.tags));
 
              tags.forEach(function (tag,index) {
-                tag.index = index+1; 
+                tag.index = elements.length+1; 
                 host._addTag(tag);
              });
 
-             host._throwsEvent("tagsLoaded",tags);     
+             host._throwsEvent("tagsLoaded",tags);  
 
         } catch(err) {
              throw new VanillaTaggerError(`Error parsing tags data => ${err}`)
         }        
     }    
-    
+
+/*-----------------------------------------------------------------------------------------*/    
+
+   _resetTags() {
+
+        try {
+            if (!wrapper) return true;
+
+            let allTags = wrapper.querySelectorAll(".tag");
+
+            allTags.forEach(function(tagNode) {
+                wrapper.removeChild(tagNode);
+            });            
+            
+            tags = [];
+            elements = [];
+            
+            host._throwsEvent("tagsReset");     
+
+            console.table(elements);
+
+        } catch(err) {
+            throw new VanillaTaggerError(`Error resetting tags => ${err}`)
+        }        
+    }        
+
 /*-----------------------------------------------------------------------------------------*/    
 
     _addTag(tag) {
@@ -172,6 +216,8 @@ class VanillaTagger extends HTMLElement {
             let element = document.createElement("a");
 
             host._attachProperties(element,tag);
+
+            host._attachMethods(tag);            
 
             host._attachEvents("click mouseover mouseout",element,tag);
 
@@ -215,11 +261,33 @@ class VanillaTagger extends HTMLElement {
                 if (tag.link.target) element.setAttribute("target",tag.link.target);
             };
 
-            tag.element = element;
-        
         } catch(err) {
             console.warn("Can't attach properties to tag:" + JSON.stringify(tag));
             throw new VanillaTaggerError(`Error attaching properties to tag => ${err}`);
+        }
+
+    }
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    _attachMethods(tag) {
+
+        try {
+            tag.addClass = function(className){
+                elements[tag.index - 1].classList.add(className);
+            }
+            tag.removeClass = function(className){
+                elements[tag.index - 1].classList.remove(className);
+            }
+            tag.toggleClass = function(className){
+                elements[tag.index - 1].classList.toggle(className);
+            }
+            tag.hasClass = function(className){
+                return elements[tag.index - 1].classList.contains(className);
+            }            
+        } catch(err) {
+            console.warn("Can't attach methods to tag:" + JSON.stringify(tag));
+            throw new VanillaTaggerError(`Error attaching methods to tag => ${err}`);
         }
 
     }
