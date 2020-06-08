@@ -4,8 +4,8 @@
 
 /*-----------------------------------------------------------------------------------------*/
 
-let host, wrapper, tags = [], elements = [];
 
+let host, wrapper, tags = [], elements = [];
 /*-----------------------------------------------------------------------------------------*/
 
 const baseStyle = `
@@ -70,13 +70,13 @@ class VanillaTagger extends HTMLElement {
 
     connectedCallback() {
         host._createComponent();
-    }    
+    }  
 
 /*-----------------------------------------------------------------------------------------*/    
 
     attributeChangedCallback(name, oldValue, newValue) { 
 
-        if (oldValue === newValue || host.classList.contains("updating") || !wrapper) return false;
+        if (!host || !wrapper || host.classList.contains("updating")  || oldValue === newValue) return false;
 
         if(name === "data-img")
             host._loadImage();
@@ -190,10 +190,10 @@ class VanillaTagger extends HTMLElement {
         try {
             if (!wrapper) return true;
 
-            let allTags = wrapper.querySelectorAll(".tag");
+            let allTags = wrapper.querySelectorAll(".tag, .popup");
 
-            allTags.forEach(function(tagNode) {
-                wrapper.removeChild(tagNode);
+            allTags.forEach(function(el) {
+                wrapper.removeChild(el);
             });            
             
             tags = [];
@@ -215,13 +215,15 @@ class VanillaTagger extends HTMLElement {
         try {
             let element = document.createElement("a");
 
+            wrapper.appendChild(element);            
+
             host._attachProperties(element,tag);
 
             host._attachMethods(tag);            
 
-            host._attachEvents("click mouseover mouseout",element,tag);
+            host._attachPopup(element,tag);
 
-            wrapper.appendChild(element);
+            host._attachEvents("click mouseover mouseout",element,tag);
 
             elements.push(element);
 
@@ -264,6 +266,101 @@ class VanillaTagger extends HTMLElement {
         } catch(err) {
             console.warn("Can't attach properties to tag:" + JSON.stringify(tag));
             throw new VanillaTaggerError(`Error attaching properties to tag => ${err}`);
+        }
+
+    }
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    _attachPopup(element, tag) {
+        
+        if (!tag.popup) return false;
+
+        try {
+
+            let popup,config;
+
+            config = {
+                content: tag.popup.content || tag.popup,
+                classes: tag.popup.classes || "black",
+                arrow: tag.popup.arrow || "center",
+                position: tag.popup.position || ((tag.left>50) ? "left" : "right"),
+                showOn: tag.popup.showOn || "hover"
+            }
+
+            popup = document.createElement("p");
+            
+            popup.dataset.index = tag.index;
+
+            popup.innerHTML = config.content;
+
+            popup.classList.add("popup");
+            popup.classList.add(config.showOn);
+            popup.classList.add(config.position);            
+            popup.classList.add("arrow" + config.arrow.charAt(0).toUpperCase() + config.arrow.slice(1));
+            config.classes.split(" ").forEach(function (cl, index) {
+                popup.classList.add(cl);
+            });
+
+            wrapper.insertBefore(popup, element.nextSibling); //insertAfter
+
+            requestAnimationFrame(function(){
+                host._repositionPopup(tag);
+            });
+
+        } catch(err) {
+            console.warn("Can't attach popup to tag:" + JSON.stringify(tag));
+            throw new VanillaTaggerError(`Error attaching popup to tag => ${err}`);
+        }
+
+    }
+
+/*-----------------------------------------------------------------------------------------*/    
+
+    _repositionPopup(tag) {
+
+        try {
+            if (!tag.popup) return false;
+
+            let popup = wrapper.querySelector(".popup[data-index='" + tag.index +"']");
+            
+            if (!popup) return false;
+
+            let element = elements[tag.index - 1];
+
+            if (!element) return false;
+
+            let config = {
+                arrow: tag.popup.arrow || "center",
+                position: tag.popup.position || ((tag.left>50) ? "left" : "right")
+            }, top, left;
+
+            if (config.position == "right")  {
+                top = `${tag.top}%`;
+                if (tag.width)
+                    left = `calc(${tag.left}% + ${tag.offsetWidth}px)`;
+                else
+                    left = `${tag.left}%`;
+            } else if (config.position == "left") {
+                top = `${tag.top}%`;
+                left = `calc(${tag.left}% - ${popup.offsetWidth}px)`;
+            } else if (config.position == "top") {
+                top = `calc(${tag.top}% - ${popup.offsetHeight}px)`;                
+                left = `${tag.left}%`;
+            } else if (config.position == "bottom") {
+                if (tag.height)
+                    top = `calc(${tag.top}% + ${tag.offsetHeight}px)`;
+                else
+                top = `${tag.top}%`;
+                left = `${tag.left}%`;
+            } 
+
+            popup.style.top = top;
+            popup.style.left = left;
+
+        } catch(err) {
+            console.warn("Can't reposition popup for tag:" + JSON.stringify(tag));
+            throw new VanillaTaggerError(`Error repositioning popup for tag => ${err}`);
         }
 
     }
