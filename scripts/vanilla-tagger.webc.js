@@ -38,9 +38,7 @@ const baseStyle = `
 
 /*-----------------------------------------------------------------------------------------*/
 
-const themeStyle = `
-    @import "styles/vanilla-tagger.theme.css";
-`;
+const themeUrl = "styles/vanilla-tagger.theme.css";
 
 /*-----------------------------------------------------------------------------------------*/
 
@@ -86,14 +84,24 @@ class VanillaTagger extends HTMLElement {
 
 /*-----------------------------------------------------------------------------------------*/
 
-  _createComponent() {
+    async _createComponent() {
         let style = document.createElement("style");
         style.appendChild(document.createTextNode(baseStyle));
         host.shadowRoot.appendChild(style);
 
-        style = document.createElement("style");
-        style.appendChild(document.createTextNode(themeStyle));
-        host.shadowRoot.appendChild(style);
+        host.classList.add("loading");
+
+        const link = await host._fetchStyle(themeUrl)
+                        .catch(() => {
+                            throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
+                        })
+                        .finally(() => {
+                            host.classList.remove("loading");
+                        });  
+
+        host.shadowRoot.appendChild(link);
+
+        host._throwsEvent("themeLoaded",themeUrl);     
 
         wrapper = document.createElement("figure");
         wrapper.classList.add("wrapper");
@@ -155,6 +163,20 @@ class VanillaTagger extends HTMLElement {
             img.src = src
         });
     }    
+
+/*-----------------------------------------------------------------------------------------*/        
+
+    async _fetchStyle(url) {
+        return new Promise((resolve, reject) => {
+          let link    = document.createElement('link');
+          link.type   = 'text/css';
+          link.rel    = 'stylesheet';
+          link.onload = () => { resolve(link); };
+          link.href   = url;
+      
+          host.shadowRoot.appendChild(link);
+        });
+    };
 
 /*-----------------------------------------------------------------------------------------*/    
 
