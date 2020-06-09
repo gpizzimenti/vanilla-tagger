@@ -3,6 +3,7 @@
 //TODO: add method to update popup
 //TODO: responsiveness by resizeObserver, not media queries
 //TODO: adjust popup arrows offset for small format (CSS only)
+//TODO: loading states (CSS only)
 //TODO: sync state/attributes in method calls (?)
 //TODO: public methods (?)
 
