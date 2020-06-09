@@ -1,5 +1,11 @@
 'use strict';
 
+//TODO: add method to update popup
+//TODO: responsiveness by resizeObserver, not media queries
+//TODO: adjust popup arrows offset for small format (CSS only)
+//TODO: sync state/attributes in method calls (?)
+//TODO: public methods (?)
+
 (function() {
 
 /*-----------------------------------------------------------------------------------------*/
@@ -390,7 +396,7 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _attachMethods(tag) {
-//TODO: sync to attributes
+
         try {
             tag.addClass = function(className){
                 elements[tag.index - 1].classList.add(className);
@@ -449,9 +455,7 @@ class VanillaTagger extends HTMLElement {
 
 /*-----------------------------------------------------------------------------------------*/    
 
-
 }
-
 
 customElements.define("vanilla-tagger", VanillaTagger);
 
