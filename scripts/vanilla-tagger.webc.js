@@ -4,8 +4,8 @@
 
 /*-----------------------------------------------------------------------------------------*/
 
-
 let host, wrapper, tags = [], elements = [];
+
 /*-----------------------------------------------------------------------------------------*/
 
 const baseStyle = `
@@ -62,7 +62,7 @@ class VanillaTagger extends HTMLElement {
         super();
         host = this,
         host.attachShadow({mode: "open"});
-}
+    }
 
 /*-----------------------------------------------------------------------------------------*/    
 
@@ -122,6 +122,20 @@ class VanillaTagger extends HTMLElement {
 
         host.dispatchEvent(evt);
     }
+
+/*-----------------------------------------------------------------------------------------*/        
+
+    async _fetchStyle(url) {
+        return new Promise((resolve, reject) => {
+        let link    = document.createElement('link');
+        link.type   = 'text/css';
+        link.rel    = 'stylesheet';
+        link.onload = () => { resolve(link); };
+        link.href   = url;
+    
+        host.shadowRoot.appendChild(link);
+        });
+    };
     
 /*-----------------------------------------------------------------------------------------*/    
 
@@ -163,20 +177,6 @@ class VanillaTagger extends HTMLElement {
             img.src = src
         });
     }    
-
-/*-----------------------------------------------------------------------------------------*/        
-
-    async _fetchStyle(url) {
-        return new Promise((resolve, reject) => {
-          let link    = document.createElement('link');
-          link.type   = 'text/css';
-          link.rel    = 'stylesheet';
-          link.onload = () => { resolve(link); };
-          link.href   = url;
-      
-          host.shadowRoot.appendChild(link);
-        });
-    };
 
 /*-----------------------------------------------------------------------------------------*/    
 
@@ -390,7 +390,7 @@ class VanillaTagger extends HTMLElement {
 /*-----------------------------------------------------------------------------------------*/    
 
     _attachMethods(tag) {
-
+//TODO: sync to attributes
         try {
             tag.addClass = function(className){
                 elements[tag.index - 1].classList.add(className);
@@ -425,7 +425,7 @@ class VanillaTagger extends HTMLElement {
                     element.addEventListener(eventName,function (e) {
                         host._throwsEvent(eventNameToThrow,tag);
 
-                        if (eventName === "click") element.classList.toggle('toggled');
+                        if (eventName === "click") tag.toggleClass('toggled');
 
                         if (tag["on"+eventName])  {
                             //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for well known security concerns
