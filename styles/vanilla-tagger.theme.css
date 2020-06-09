@@ -97,7 +97,6 @@
     user-select: none; 
     width: var(--dot-size);      
     height: var(--dot-size);      
-    border: none; 
     border-radius: 100%; 
     cursor: pointer; 
 }
@@ -265,6 +264,68 @@ dot.light[class^='icon-']::before, .light[class*=' icon-']::before {
     color: rgba(var(--white),1);
 }
 
+.popup::before {
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    content: "";
+    position: absolute;
+    background-color: inherit;
+    transform: rotate(45deg);
+}
+
+.popup.right.arrowTop::before {
+    left: -5px;
+    top: 7px;
+}
+.popup.right.arrowCenter::before {
+    left: -5px;
+    top: calc(50% - 7px);
+}
+.popup.right.arrowBottom::before {
+    left: -5px;
+    bottom: 7px;
+}
+.popup.left.arrowTop::before {
+    right: -5px;
+    top: 7px;
+}
+.popup.left.arrowCenter::before {
+    right: -5px;
+    top: calc(50% - 7px);
+}
+.popup.left.arrowBottom::before {
+    right: -5px;
+    bottom: 7%;
+}
+.popup.top.arrowLeft::before {
+    left: 5px;
+    bottom: -5px;
+}
+.popup.top.arrowCenter::before {
+    left:  calc(50% - 7px);
+    bottom: -5px;
+}
+.popup.top.arrowRight::before {
+    right: 5px;
+    bottom: -5px;
+}
+.popup.bottom.arrowLeft::before {
+    left: 5px;
+    top: -5px;
+}
+.popup.bottom.arrowCenter::before {
+    left:  calc(50% - 7px);
+    top: -5px;
+}
+.popup.bottom.arrowRight::before {
+    right: 5px;
+    top: -5px;
+}
+
+
+
+
 .popup.right.arrowBottom {
     transform: translate(60px,-85%);
 }
@@ -284,22 +345,22 @@ dot.light[class^='icon-']::before, .light[class*=' icon-']::before {
     transform: translate(-60px,-10%);
 }
 .popup.top.arrowLeft {
-    transform: translate(-15%,-60px);
+    transform: translate(-4%,-60px);
 }
 .popup.top.arrowCenter {
     transform: translate(-50%,-60px);
 }
 .popup.top.arrowRight {
-    transform: translate(-85%,-60px);
+    transform: translate(-96%,-60px);
 }
 .popup.bottom.arrowLeft {
-    transform: translate(-8%,60px);
+    transform: translate(-4%,60px);
 }
 .popup.bottom.arrowCenter {
     transform: translate(-50%,60px);
 }
 .popup.bottom.arrowRight {
-    transform: translate(-92%,60px);
+    transform: translate(-96%,60px);
 }
 
 
@@ -310,76 +371,76 @@ dot.light[class^='icon-']::before, .light[class*=' icon-']::before {
     z-index: 2;
 }
 
-.tag:hover + .popup.hover.right.arrowTop,
-.tag.toggled + .popup.toggle.right.arrowTop,
-.tag.show-popup + .popup.right.arrowTop{
-    transform: translate(50px, -85%);
-}
-
-.tag:hover + .popup.hover.left.arrowTop,
-.tag.toggled + .popup.toggle.left.arrowTop,
-.tag.show-popup + .popup.left.arrowTop {
-    transform: translate(-50px, -85%);
-}
-
-.tag:hover + .popup.hover.right.arrowCenter,
-.tag.toggled + .popup.toggle.right.arrowCenter,
-.tag.show-popup + .popup.right.arrowCenter{
-    transform: translate(50px, -50%);
-}
-
-.tag:hover + .popup.hover.left.arrowCenter,
-.tag.toggled + .popup.toggle.left.arrowCenter,
-.tag.show-popup + .popup.left.arrowCenter {
-    transform: translate(-50px, -50%);
-}
-
 .tag:hover + .popup.hover.right.arrowBottom,
 .tag.toggled + .popup.toggle.right.arrowBottom,
-.tag.show-popup + .popup.right.arrowBottom {
-    transform: translate(50px, -10%);
+.tag.show-popup + .popup.right.arrowBottom{
+    transform: translate(40px, -85%);
 }
 
 .tag:hover + .popup.hover.left.arrowBottom,
 .tag.toggled + .popup.toggle.left.arrowBottom,
 .tag.show-popup + .popup.left.arrowBottom {
-    transform: translate(-50px, -10%);
+    transform: translate(-40px, -85%);
+}
+
+.tag:hover + .popup.hover.right.arrowCenter,
+.tag.toggled + .popup.toggle.right.arrowCenter,
+.tag.show-popup + .popup.right.arrowCenter{
+    transform: translate(40px, -50%);
+}
+
+.tag:hover + .popup.hover.left.arrowCenter,
+.tag.toggled + .popup.toggle.left.arrowCenter,
+.tag.show-popup + .popup.left.arrowCenter {
+    transform: translate(-40px, -50%);
+}
+
+.tag:hover + .popup.hover.right.arrowTop,
+.tag.toggled + .popup.toggle.right.arrowTop,
+.tag.show-popup + .popup.right.arrowTop {
+    transform: translate(40px, -10%);
+}
+
+.tag:hover + .popup.hover.left.arrowTop,
+.tag.toggled + .popup.toggle.left.arrowTop,
+.tag.show-popup + .popup.left.arrowTop {
+    transform: translate(-40px, -10%);
 }
 
 .tag:hover + .popup.hover.top.arrowLeft,
 .tag.toggled + .popup.toggle.top.arrowLeft,
 .tag.show-popup + .popup.top.arrowLeft{
-    transform: translate(-10%, -50px);
+    transform: translate(-4%, -40px);
 }
 
 .tag:hover + .popup.hover.top.arrowCenter,
 .tag.toggled + .popup.toggle.top.arrowCenter,
 .tag.show-popup + .popup.top.arrowCenter{
-    transform: translate(-50%, -50px);
+    transform: translate(-50%, -40px);
 }
 
 .tag:hover + .popup.hover.top.arrowRight,
 .tag.toggled + .popup.toggle.top.arrowRight,
 .tag.show-popup + .popup.top.arrowRight{
-    transform: translate(-85%, -50px);
+    transform: translate(-96%, -40px);
 }
 
 .tag:hover + .popup.hover.bottom.arrowLeft,
 .tag.toggled + .popup.toggle.bottom.arrowLeft,
 .tag.show-popup + .popup.bottom.arrowLeft{
-    transform: translate(-8%, 30px);
+    transform: translate(-4%, 40px);
 }
 
 .tag:hover + .popup.hover.bottom.arrowCenter,
 .tag.toggled + .popup.toggle.bottom.arrowCenter,
 .tag.show-popup + .popup.bottom.arrowCenter{
-    transform: translate(-50%, 30px);
+    transform: translate(-50%, 40px);
 }
 
 .tag:hover + .popup.hover.bottom.arrowRight,
 .tag.toggled + .popup.toggle.bottom.arrowRight,
 .tag.show-popup + .popup.bottom.arrowRight{
-    transform: translate(-92%, 30px);
+    transform: translate(-96%, 40px);
 }
 
 
