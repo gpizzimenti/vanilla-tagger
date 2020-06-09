@@ -4,6 +4,8 @@
 /*------------- you can override this from light DOM ------------------------- */
 
 :host {
+    --font: sans-serif;
+
     --white:255, 255, 255;
     --black:0, 0, 0;
 
@@ -112,7 +114,7 @@
     position: absolute;
     width: var(--dot-size);      
     height: var(--dot-size);      
-    font-family: sans-serif;
+    font-family: var(--font);
     font-weight: bold; 
     font-size: var(--dot-font-size);       
     line-height: var(--dot-size);       
@@ -144,7 +146,7 @@
     line-height: 16px;
     height: 16px;
     padding: 0 5px;
-    font-family: sans-serif;
+    font-family: var(--font);
     font-size: var(--dot-font-size-small);
     color: rgba(var(--white),1);      
     text-shadow: 0 1px rgba(var(--grey),.7);      
@@ -227,7 +229,7 @@ dot.light[class^='icon-']::before, .light[class*=' icon-']::before {
 /*---------------------------- POPUPS---------------------------- */
 
 .popup {
-    font-family: sans-serif;
+    font-family: var(--font);
     position: absolute;
     display: block;
     margin: 0;
