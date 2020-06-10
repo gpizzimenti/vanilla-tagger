@@ -2,6 +2,7 @@
 
 //TODO: complete popup positioning CSS classes
 //TODO: completes CSS classes to show all popups & add method
+//TODO: CSS classes/methos to hide/restore a specifi tag / all tags
 //TODO: add method to update popup
 //TODO: getElement/getPopup private methods
 //TODO: loading/missing/error states (CSS only)
