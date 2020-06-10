@@ -8,6 +8,7 @@
 //TODO: loading/missing/error states (CSS only)
 //TODO: sync state/attributes in method calls (?)
 //TODO: public methods (?)
+//TODO: add other icons (CSS)
 
 (function () {
   /*-----------------------------------------------------------------------------------------*/
