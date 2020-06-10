@@ -346,12 +346,14 @@
         element.dataset.index = tag.index;
         element.style.top = `${tag.top}%`;
         element.style.left = `${tag.left}%`;
-
-        if (!tag.id) {
-          tag.id = "tag-" + tag.index;
-        }
+        if (tag.width) element.style.width = `${tag.width}%`;
+        if (tag.height) element.style.height = `${tag.height}%`;
+        if (!tag.id) tag.id = "tag-" + tag.index;
 
         element.setAttribute("id", tag.id);
+
+        if (!tag.width || !tag.width) element.classList.add("dot");
+        else element.classList.add("hotspot");
 
         if (tag.classes) {
           tag.classes.split(" ").forEach(function (cl, index) {
