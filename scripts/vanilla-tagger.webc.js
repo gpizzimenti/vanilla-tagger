@@ -1,5 +1,7 @@
 "use strict";
 
+//TODO: complete popup positioning CSS classes
+//TODO: completes CSS classes to show all popups & add method
 //TODO: add method to update popup
 //TODO: getElement/getPopup private methods
 //TODO: loading/missing/error states (CSS only)
@@ -97,37 +99,29 @@
 
     /*-----------------------------------------------------------------------------------------*/
 
-    async _createComponent() {
-      let style = document.createElement("style");
-      style.appendChild(document.createTextNode(baseStyle));
-      host.shadowRoot.appendChild(style);
+    _throwsEvent(name, data) {
+      let evt = new CustomEvent("VanillaTagger:" + name, {
+        bubbles: true,
+        detail: data,
+      });
 
+      host.dispatchEvent(evt);
+    }
+
+    /*-----------------------------------------------------------------------------------------*/
+
+    async _createComponent() {
       host.classList.add("loading");
 
-      const link = await host
-        ._fetchStyle(themeUrl)
-        .catch(() => {
-          throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
-        })
-        .finally(() => {
-          host.classList.remove("loading");
-        });
-
-      host.shadowRoot.appendChild(link);
-
-      host._throwsEvent("themeLoaded", themeUrl);
-
-      const smallBp = getComputedStyle(host).getPropertyValue(
-        "--format-small-trigger"
-      );
-
-      if (smallBp) breakpoints.small = parseInt(smallBp, 10);
+      await host._applyStyles();
 
       wrapper = document.createElement("figure");
       wrapper.classList.add("wrapper");
       host.shadowRoot.appendChild(wrapper);
 
       host._setObservers();
+
+      host.classList.remove("loading");
 
       host._throwsEvent("componentCreated");
 
@@ -137,13 +131,24 @@
 
     /*-----------------------------------------------------------------------------------------*/
 
-    _throwsEvent(name, data) {
-      let evt = new CustomEvent("VanillaTagger:" + name, {
-        bubbles: true,
-        detail: data,
+    async _applyStyles() {
+      let style = document.createElement("style");
+      style.appendChild(document.createTextNode(baseStyle));
+      host.shadowRoot.appendChild(style);
+
+      const link = await host._fetchStyle(themeUrl).catch(() => {
+        throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
       });
 
-      host.dispatchEvent(evt);
+      host.shadowRoot.appendChild(link);
+
+      const smallBp = getComputedStyle(host).getPropertyValue(
+        "--format-small-trigger"
+      );
+
+      if (smallBp) breakpoints.small = parseInt(smallBp, 10);
+
+      host._throwsEvent("themeLoaded", themeUrl);
     }
 
     /*-----------------------------------------------------------------------------------------*/
@@ -437,19 +442,29 @@
           top,
           left;
 
-        if (config.position == "right") {
-          top = `${tag.top}%`;
-          if (tag.width) left = `calc(${tag.left}% + ${tag.offsetWidth}px)`;
-          else left = `${tag.left}%`;
-        } else if (config.position == "left") {
-          top = `${tag.top}%`;
-          left = `calc(${tag.left}% - ${popup.offsetWidth}px)`;
-        } else if (config.position == "top") {
+        if (
+          tag.height &&
+          (config.position === "right" || config.position === "left")
+        ) {
+          if (config.arrow === "top") top = `${tag.top}%`;
+          else if (config.arrow == "center")
+            top = `calc(${tag.top}% + (${element.offsetHeight}px / 2))`;
+          else if (config.arrow == "bottom")
+            top = `calc(${tag.top}% + (${element.offsetHeight}px))`;
+        } else if (tag.height && config.position === "bottom") {
+          top = `calc(${tag.top}% + ${element.offsetHeight}px)`;
+        } else if (config.position === "top") {
           top = `calc(${tag.top}% - ${popup.offsetHeight}px)`;
+        } else top = `${tag.top}%`;
+
+        if (config.position === "right") {
+          if (tag.width) left = `calc(${tag.left}% + ${element.offsetWidth}px)`;
+          else left = `${tag.left}%`;
+        } else if (config.position === "left") {
+          left = `calc(${tag.left}% - ${popup.offsetWidth}px)`;
+        } else if (config.position === "top") {
           left = `${tag.left}%`;
-        } else if (config.position == "bottom") {
-          if (tag.height) top = `calc(${tag.top}% + ${tag.offsetHeight}px)`;
-          else top = `${tag.top}%`;
+        } else if (config.position === "bottom") {
           left = `${tag.left}%`;
         }
 
@@ -473,8 +488,8 @@
         tag.removeClass = function (className) {
           elements[tag.index - 1].classList.remove(className);
         };
-        tag.toggleClass = function (className) {
-          elements[tag.index - 1].classList.toggle(className);
+        tag.toggleClass = function (className, force) {
+          elements[tag.index - 1].classList.toggle(className, force);
         };
         tag.hasClass = function (className) {
           return elements[tag.index - 1].classList.contains(className);
