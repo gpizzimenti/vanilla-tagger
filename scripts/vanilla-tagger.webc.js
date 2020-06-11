@@ -3,7 +3,7 @@
 //TODO: caption
 //TODO: complete popup positioning CSS classes
 //TODO: completes CSS classes to show all popups & add method
-//TODO: CSS classes/methos to hide/restore a specifi tag / all tags
+//TODO: CSS classes/methos to hide/restore a specific tag / all tags
 //TODO: add method to update popup
 //TODO: getElement/getPopup private methods
 //TODO: loading/missing/error states (CSS only)
@@ -11,6 +11,7 @@
 //TODO: public methods (?)
 //TODO: add other icons (CSS)
 //TODO: summary / navigation
+//TODO: breakpoints as data- in :host
 
 (function () {
   /*-----------------------------------------------------------------------------------------*/
@@ -21,7 +22,7 @@
     elements = [],
     loggedWidth,
     breakpoints = {
-      small: 640,
+      small: 640, //default.. you can alter this through the "--format-small-trigger" CSS variable in vanilla-tagger.theme.css
     };
 
   /*-----------------------------------------------------------------------------------------*/
