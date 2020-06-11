@@ -1,5 +1,6 @@
 "use strict";
 
+//TODO: caption
 //TODO: complete popup positioning CSS classes
 //TODO: completes CSS classes to show all popups & add method
 //TODO: CSS classes/methos to hide/restore a specifi tag / all tags
@@ -9,6 +10,7 @@
 //TODO: sync state/attributes in method calls (?)
 //TODO: public methods (?)
 //TODO: add other icons (CSS)
+//TODO: summary / navigation
 
 (function () {
   /*-----------------------------------------------------------------------------------------*/
