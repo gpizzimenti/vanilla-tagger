@@ -1,7 +1,6 @@
 "use strict";
 
-//TODO: add method to host to show all popups (use CSS class "".show-allpopups")
-//TODO closeavle popup
+//TODO closeable popup
 //TODO: CSS classes/methods to hide/restore a specific tag / all tags
 //TODO: add method to update popup
 //TODO: loading/missing/error states (CSS only)
@@ -180,6 +179,14 @@
         throw new VanillaTaggerError(`Error resetting tags => ${err}`);
       }
     }
+
+    /*-----------------------------------------------------------------------------------------*/
+
+    toggleAllPopups(force) {
+      wrapper.classList.toggle("show-allpopups", force);
+    }
+
+    /*-----------------------------------------------------------------------------------------*/
   }
 
   /*-----------------------------------------------------------------------------------------*/
