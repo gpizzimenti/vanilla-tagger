@@ -26,6 +26,8 @@
   --index-font-size: 18px;
   --index-font-size-small: 10px;
 
+  --hostpot-font-size-small: 10px;
+
   --popup-maxwidth: 400px;
 
   --shape-camera: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0iIzMzMyIgeG1sbnM6dj0iaHR0cHM6Ly92ZWN0YS5pby9uYW5vIj48Y2lyY2xlIGN4PSI0OC44MTQiIGN5PSI1Mi4zOTMiIHI9IjEzLjI3NSIvPjxwYXRoIGQ9Ik0zNi42MiA5Ljg3NmwtNy42NjMgOC41NzNIMTUuNDdjLTQuNTk4IDAtOC40MyAzLjg5Ny04LjQzIDguNTczdjUxLjQ0YzAgNC42NzYgMy44MyA4LjU3MyA4LjQzIDguNTczaDY3LjQzYzQuNTk4IDAgOC40My0zLjg5NyA4LjQzLTguNTczdi01MS40NGMwLTQuNjc2LTMuODMtOC41NzMtOC40My04LjU3M0g2OS41N2wtNy42NjMtOC41NzN6TTQ5LjE4NiA3NC4xYy0xMS42NDcgMC0yMS4xNS05LjY2NS0yMS4xNS0yMS41MTJzOS41MDItMjEuMzU2IDIxLjE1LTIxLjM1NiAyMS4xNSA5LjY2NSAyMS4xNSAyMS41MTJTNjAuODM0IDc0LjEgNDkuMTg2IDc0LjF6Ii8+PC9zdmc+");
@@ -328,6 +330,10 @@
 .small-format .dot.responsive.show-index-ontop::after {
   top: -12px;
   right: -12px;
+}
+
+.small-format .hotspot.responsive:after {
+  font-size: var(--hostpot-font-size-small);
 }
 
 /*---------------------------- POPUPS---------------------------- */
