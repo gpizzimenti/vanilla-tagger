@@ -356,6 +356,7 @@
   border-radius: 3px;
   box-shadow: var(--shadow);
   z-index: 0;
+  pointer-events: none;
 }
 
 .tag:hover + .popup.hover,
@@ -364,6 +365,7 @@
 .show-allpopups .tag + .popup {
   opacity: 1;
   z-index: 2;
+  pointer-events: inherit;
 }
 
 /* COLORS */
