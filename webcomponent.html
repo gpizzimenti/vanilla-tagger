@@ -113,7 +113,13 @@
                         "height": 10.5812,
                         "width": 30.4,
                         "classes": "xlight with-shadow with-border show-caption pulsating-onhover responsive",
-                        "caption": "A complex of condos"
+                        "caption": "A complex of condos",
+                        "popup" :  {
+                          "classes": "black",
+                          "arrow": "center",
+                          "position": "bottom",
+                          "content": "This tag has a caption"
+                         }
                    }]'
       >
             Your browser doesn't currently support this component<br>
@@ -121,7 +127,14 @@
       </vanilla-tagger>
 
 
+      <button onclick="al();">Alert</button>
+
       <script>
+
+     function al() {
+       document.getElementById("v-tagger")._alert("aaa");
+     }
+
 	   	let tagger = document.getElementById("v-tagger");
 
              tagger.addEventListener('VanillaTagger:componentCreated',function (e) { 

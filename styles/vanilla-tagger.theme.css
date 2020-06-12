@@ -780,6 +780,17 @@
   transform: translate(-20%, -25px);
 }
 
+.hotspot + .popup.top.arrow-left {
+  transform: translate(0, -25px);
+}
+
+.hotspot:hover + .popup.top.arrow-left,
+.hotspot.toggled + .popup.top.arrow-left,
+.hotspot.show-popup + .popup.top.arrow-left,
+.show-allpopups .hotspot + .popup.top.arrow-left {
+  transform: translate(0, -15px);
+}
+
 /* POPUP ON TOP + ARROW CENTERED */
 
 .dot + .popup.top.arrow-center {
@@ -804,6 +815,17 @@
   transform: translate(-50%, -25px);
 }
 
+.hotspot + .popup.top.arrow-center {
+  transform: translate(-50%, -25px);
+}
+
+.hotspot:hover + .popup.top.arrow-center,
+.hotspot.toggled + .popup.top.arrow-center,
+.hotspot.show-popup + .popup.top.arrow-center,
+.show-allpopups .hotspot + .popup.top.arrow-center {
+  transform: translate(-50%, -15px);
+}
+
 /* POPUP ON TOP + ARROW TO THE RIGHT */
 
 .dot + .popup.top.arrow-right {
@@ -826,6 +848,17 @@
 .small-format .dot.responsive.show-popup + .popup.top.arrow-right,
 .show-allpopups.small-format .dot.responsive + .popup.top.arrow-right {
   transform: translate(-80%, -25px);
+}
+
+.hotspot + .popup.top.arrow-right {
+  transform: translate(-100%, -25px);
+}
+
+.hotspot:hover + .popup.top.arrow-right,
+.hotspot.toggled + .popup.top.arrow-right,
+.hotspot.show-popup + .popup.top.arrow-right,
+.show-allpopups .hotspot + .popup.top.arrow-right {
+  transform: translate(-100%, -15px);
 }
 
 /* POPUP ON BOTTOM + ARROW TO THE LEFT */
@@ -887,6 +920,17 @@
   transform: translate(-50%, 25px);
 }
 
+.hotspot + .popup.bottom.arrow-center {
+  transform: translate(-50%, 25px);
+}
+
+.hotspot:hover + .popup.bottom.arrow-center,
+.hotspot.toggled + .popup.bottom.arrow-center,
+.hotspot.show-popup + .popup.bottom.arrow-center,
+.show-allpopups .hotspot + .popup.bottom.arrow-center {
+  transform: translate(-50%, 15px);
+}
+
 /* POPUP ON BOTTOM + ARROW TO THE RIGHT */
 
 .dot + .popup.bottom.arrow-right {
@@ -909,4 +953,15 @@
 .small-format .dot.responsive.show-popup + .popup.bottom.arrow-right,
 .show-allpopups.small-format .dot.responsive + .popup.bottom.arrow-right {
   transform: translate(-95%, 25px);
+}
+
+.hotspot + .popup.bottom.arrow-right {
+  transform: translate(-100%, 25px);
+}
+
+.hotspot:hover + .popup.bottom.arrow-right,
+.hotspot.toggled + .popup.bottom.arrow-right,
+.hotspot.show-popup + .popup.bottom.arrow-right,
+.show-allpopups .hotspot + .popup.bottom.arrow-right {
+  transform: translate(-100%, 15px);
 }
