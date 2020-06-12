@@ -1,6 +1,5 @@
 "use strict";
 
-//TODO: caption
 //TODO: complete popup positioning CSS classes
 //TODO: add method to host to show all popups (use CSS class "".show-allpopups")
 //TODO: CSS classes/methods to hide/restore a specific tag / all tags
@@ -360,6 +359,7 @@
         element.dataset.index = tag.index;
         element.style.top = `${tag.top}%`;
         element.style.left = `${tag.left}%`;
+        if (tag.caption) element.dataset.caption = tag.caption;
         if (tag.width) element.style.width = `${tag.width}%`;
         if (tag.height) element.style.height = `${tag.height}%`;
         if (!tag.id) tag.id = "tag-" + tag.index;

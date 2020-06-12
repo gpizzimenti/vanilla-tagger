@@ -40,7 +40,8 @@
   cursor: pointer;
 }
 
-.show-index::after {
+.show-index::after,
+.show-caption::after {
   content: attr(data-index);
   display: inline-block;
   position: absolute;
@@ -54,6 +55,13 @@
   text-overflow: hidden;
   vertical-align: middle;
   text-shadow: 2px 2px rgba(var(--black), 0.4);
+}
+
+.show-index::after {
+  content: attr(data-index);
+}
+.show-caption::after {
+  content: attr(data-caption);
 }
 
 .with-border {
@@ -161,6 +169,12 @@
   to {
     box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
   }
+}
+
+/*---------------------------- HOTSPOT ---------------------------- */
+
+.hotspot {
+  overflow: hidden;
 }
 
 /*---------------------------- DOT ---------------------------- */
