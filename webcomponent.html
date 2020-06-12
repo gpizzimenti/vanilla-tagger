@@ -69,7 +69,7 @@
 
           /*-----------------------------------------------------------------------------------------*/
 
-          let redTagHelper = function redTagHelper(tag) {
+          var redTagHelper = function redTagHelper(tag) { 
                   let choice =  (tag.hasClass("shape-marker-full") ? "a marker icon" : "a marker shape"),
                       message = "The " + tag.id + " has functions attached to the click event via the \"onclick\" trigger in the tag definition.\n\n" ,
                       question = "E.g.: Would you like a " + choice + " for this tag?",
