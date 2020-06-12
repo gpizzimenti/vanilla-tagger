@@ -2,10 +2,9 @@
 
 //TODO: caption
 //TODO: complete popup positioning CSS classes
-//TODO: completes CSS classes to show all popups & add method
-//TODO: CSS classes/methos to hide/restore a specific tag / all tags
+//TODO: add method to host to show all popups (use CSS class "".show-allpopups")
+//TODO: CSS classes/methods to hide/restore a specific tag / all tags
 //TODO: add method to update popup
-//TODO: getElement/getPopup private methods
 //TODO: loading/missing/error states (CSS only)
 //TODO: sync state/attributes in method calls (?)
 //TODO: public methods (?)
@@ -19,12 +18,24 @@
   let host,
     wrapper,
     tags = [],
-    elements = [],
     loggedWidth,
     breakpoints = {
       small: 640, //default.. you can alter this through the "--format-small-trigger" CSS variable in vanilla-tagger.theme.css
+    },
+    helpers = {
+      addClass: function (el, className) {
+        return el.classList.add(className);
+      },
+      removeClass: function (el, className) {
+        return el.classList.remove(className);
+      },
+      toggleClass: function (el, className, force) {
+        return el.classList.toggle(className, force);
+      },
+      hasClass: function (el, className) {
+        return el.classList.contains(className);
+      },
     };
-
   /*-----------------------------------------------------------------------------------------*/
 
   const baseStyle = `
@@ -275,9 +286,7 @@
     /*-----------------------------------------------------------------------------------------*/
 
     _loadTags(jsonTags, reset) {
-      if (reset) {
-        host._resetTags();
-      }
+      host._resetTags();
 
       if (!jsonTags && !host.dataset.tags) {
         console.warn(
@@ -290,7 +299,7 @@
         tags = jsonTags ? jsonTags : JSON.parse(host.dataset.tags);
 
         tags.forEach(function (tag, index) {
-          tag.index = elements.length + 1;
+          tag.index = index + 1;
           host._addTag(tag);
         });
 
@@ -313,11 +322,8 @@
         });
 
         tags = [];
-        elements = [];
 
         host._throwsEvent("tagsReset");
-
-        console.table(elements);
       } catch (err) {
         throw new VanillaTaggerError(`Error resetting tags => ${err}`);
       }
@@ -338,8 +344,6 @@
         host._attachPopup(element, tag);
 
         host._attachEvents("click mouseover mouseout", element, tag);
-
-        elements.push(element);
 
         host._throwsEvent("tagAdded", tag);
       } catch (err) {
@@ -362,7 +366,7 @@
 
         element.setAttribute("id", tag.id);
 
-        if (!tag.width || !tag.width) element.classList.add("dot");
+        if (!tag.width || !tag.height) element.classList.add("dot");
         else element.classList.add("hotspot");
 
         if (tag.classes) {
@@ -430,15 +434,10 @@
       try {
         if (!tag.popup) return false;
 
-        let popup = wrapper.querySelector(
-          ".popup[data-index='" + tag.index + "']"
-        );
+        let element = tag.getElement(),
+          popup = tag.getPopupElement();
 
-        if (!popup) return false;
-
-        let element = elements[tag.index - 1];
-
-        if (!element) return false;
+        if (!element || !popup) return false;
 
         let config = {
             arrow: tag.popup.arrow || "center",
@@ -452,7 +451,7 @@
           (config.position === "right" || config.position === "left")
         ) {
           if (config.arrow === "top") top = `${tag.top}%`;
-          else if (config.arrow == "center")
+          else if (config.arrow === "center")
             top = `calc(${tag.top}% + (${element.offsetHeight}px / 2))`;
           else if (config.arrow == "bottom")
             top = `calc(${tag.top}% + (${element.offsetHeight}px))`;
@@ -469,6 +468,12 @@
           left = `calc(${tag.left}% - ${popup.offsetWidth}px)`;
         } else if (config.position === "top") {
           left = `${tag.left}%`;
+        } else if (
+          tag.width &&
+          config.position === "bottom" &&
+          config.arrow === "center"
+        ) {
+          left = `calc(${tag.left}% + (${element.offsetWidth}px / 2))`;
         } else if (config.position === "bottom") {
           left = `${tag.left}%`;
         }
@@ -487,17 +492,40 @@
 
     _attachMethods(tag) {
       try {
+        tag.getElement = function () {
+          return wrapper.querySelector(".tag[data-index='" + tag.index + "']");
+        };
+
+        tag.getPopupElement = function () {
+          return wrapper.querySelector(
+            ".popup[data-index='" + tag.index + "']"
+          );
+        };
+
         tag.addClass = function (className) {
-          elements[tag.index - 1].classList.add(className);
+          return helpers.addClass(tag.getElement(), className);
         };
         tag.removeClass = function (className) {
-          elements[tag.index - 1].classList.remove(className);
+          return helpers.removeClass(tag.getElement(), className);
         };
         tag.toggleClass = function (className, force) {
-          elements[tag.index - 1].classList.toggle(className, force);
+          return helpers.toggleClass(tag.getElement(), className, force);
         };
         tag.hasClass = function (className) {
-          return elements[tag.index - 1].classList.contains(className);
+          return helpers.hasClass(tag.getElement(), className);
+        };
+
+        tag.addClassToPopup = function (className) {
+          return helpers.addClass(tag.getPopupElement(), className);
+        };
+        tag.removeClassFromPopup = function (className) {
+          return helpers.removeClass(tag.getPopupElement(), className);
+        };
+        tag.toggleClassOfPopup = function (className, force) {
+          return helpers.toggleClass(tag.getPopupElement(), className, force);
+        };
+        tag.popupHasClass = function (className) {
+          return helpers.hasClass(tag.getPopupElement(), className);
         };
       } catch (err) {
         console.warn("Can't attach methods to tag:" + JSON.stringify(tag));

@@ -7,19 +7,23 @@
       <script>
 
           function redTagHelper(tag) {
-                  let choice =  (tag.hasClass("shape-marker") ? "a marker icon" : "a marker shape"),
+                  let choice =  (tag.hasClass("shape-marker-full") ? "a marker icon" : "a marker shape"),
                       message = "The " + tag.id + " has functions attached to the click event via the \"onclick\" trigger in the tag definition.\n\n" ,
                       question = "E.g.: Would you like a " + choice + " for this tag?",
-                      action = (tag.hasClass("shape-marker") ? "icon" : "shape"),
+                      action = (tag.hasClass("shape-marker-full") ? "icon" : "shape"),
                       decision = confirm(message + question);
 
                       if (decision && action==="shape") {
                           tag.removeClass("icon-marker");
-                          tag.addClass("shape-marker");
+                          tag.removeClass("show-index-ontop");
+                          tag.addClass("shape-marker-full");
+                          tag.addClass("show-index");
                       }    
                       else if (decision && action==="icon") {
-                          tag.removeClass("shape-marker");
+                          tag.removeClass("shape-marker-full");
+                          tag.removeClass("show-index");
                           tag.addClass("icon-marker");
+                          tag.addClass("show-index-ontop");
                       }    
           };
 
@@ -99,8 +103,8 @@
                       "classes": "xlight with-shadow with-border show-index",
                       "popup" :  {
                         "classes": "black",
-                        "arrow": "top",
-                        "position": "left",
+                        "arrow": "center",
+                        "position": "bottom",
                         "content": "A<br/>very,<br/>very,<br/>very,<br/>very,<br/>very,<br/>tall<br/>skyscraper<br/>(but, at last<br/>this popup<br/>is aligned<br/>on top)"
                       }
                    }]'
