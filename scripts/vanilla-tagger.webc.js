@@ -490,7 +490,7 @@
 
       config = {
         content: tag.popup.content || tag.popup,
-        classes: tag.popup.classes || "black",
+        classes: tag.popup.classes || "xdark",
         arrow: tag.popup.arrow || "center",
         position: tag.popup.position || (tag.left > 50 ? "left" : "right"),
         showOn: tag.popup.showOn || "hover",
