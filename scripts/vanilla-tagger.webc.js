@@ -130,7 +130,7 @@
       wrapper.classList.add("img-loaded");
       host.classList.remove("updating");
 
-      _throwsEvent("imgLoaded", {
+      _throwEvent("imgLoaded", {
         src: imgObj.src,
         width: imgObj.width,
         height: imgObj.height,
@@ -147,7 +147,7 @@
         return false;
       }
 
-      host.resetTags();
+      if (tags.length > 0) host.resetTags();
 
       try {
         host.classList.add("updating");
@@ -159,7 +159,7 @@
           _addTag(tag);
         });
 
-        _throwsEvent("tagsLoaded", tags);
+        _throwEvent("tagsLoaded", tags);
       } catch (err) {
         throw new VanillaTaggerError(`Error parsing tags data => ${err}`);
       } finally {
@@ -183,7 +183,7 @@
 
         tags = [];
 
-        _throwsEvent("tagsReset");
+        _throwEvent("tagsReset");
       } catch (err) {
         throw new VanillaTaggerError(`Error resetting tags => ${err}`);
       } finally {
@@ -229,7 +229,7 @@
 
     host.classList.remove("loading");
 
-    _throwsEvent("componentCreated");
+    _throwEvent("componentCreated");
 
     //we don't use slotted elements, to achieve maximum incapsulation
     host.loadImage().then(host.loadTags);
@@ -254,7 +254,7 @@
 
     if (smallBp) breakpoints.small = parseInt(smallBp, 10);
 
-    _throwsEvent("themeLoaded", themeUrl);
+    _throwEvent("themeLoaded", themeUrl);
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -293,7 +293,7 @@
   const _checkFormat = function _checkFormat(currentWidth) {
     if (!loggedWidth && currentWidth <= breakpoints.small) {
       wrapper.classList.add("small-format");
-      _throwsEvent("formatTriggered", {
+      _throwEvent("formatTriggered", {
         state: true,
         format: "small",
         breakpoint: breakpoints.small,
@@ -304,7 +304,7 @@
         loggedWidth > breakpoints.small
       ) {
         wrapper.classList.add("small-format");
-        _throwsEvent("formatTriggered", {
+        _throwEvent("formatTriggered", {
           state: true,
           format: "small",
           breakpoint: breakpoints.small,
@@ -314,7 +314,7 @@
         loggedWidth <= breakpoints.small
       ) {
         wrapper.classList.remove("small-format");
-        _throwsEvent("formatTriggered", {
+        _throwEvent("formatTriggered", {
           state: false,
           format: "small",
           breakpoint: breakpoints.small,
@@ -327,7 +327,7 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _throwsEvent = function _throwsEvent(name, data) {
+  const _throwEvent = function _throwEvent(name, data) {
     if (!host) return false;
 
     let evt = new CustomEvent("VanillaTagger:" + name, {
@@ -365,7 +365,7 @@
 
       _attachEvents("click mouseover mouseout", element, tag);
 
-      _throwsEvent("tagAdded", tag);
+      _throwEvent("tagAdded", tag);
     } catch (err) {
       console.warn("Can't render tag:" + JSON.stringify(tag));
       throw new VanillaTaggerError(`Error rendering tag => ${err}`);
@@ -517,7 +517,7 @@
         closeButton.addEventListener("click", function (e) {
           tag.removeClass("show-popup");
           tag.removeClass("toggled");
-          _throwsEvent("popupClosedByClick", tag);
+          _throwEvent("popupClosedByClick", tag);
         });
 
         popup.appendChild(closeButton);
@@ -609,7 +609,7 @@
               "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
           element.addEventListener(eventName, function (e) {
-            _throwsEvent(eventNameToThrow, tag);
+            _throwEvent(eventNameToThrow, tag);
 
             if (eventName === "click") tag.toggleClass("toggled");
 

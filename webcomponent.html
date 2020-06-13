@@ -29,6 +29,19 @@
                console.log("Component created: " + e.target.id);
              });
 
+             tagger.addEventListener('VanillaTagger:themeLoaded',function (e) { 
+               console.log("Style theme loaded from: " + e.detail);
+             });
+
+             tagger.addEventListener('VanillaTagger:formatTriggered',function (e) { 
+               let format = e.detail,
+                   state = (format.state ? "activated" : "deactivated") ,
+                   breakpoint = format.breakpoint;
+                   
+               console.log("Format " + format.format + " has been " + state + " at the " + breakpoint + "px width");
+             });
+
+
              tagger.addEventListener('VanillaTagger:imgLoaded',function (e) { 
                console.log("Image loaded: " + JSON.stringify(e.detail));
              });
@@ -41,6 +54,14 @@
                console.log("Tags loaded: " + JSON.stringify(e.detail));
              });
 
+             tagger.addEventListener('VanillaTagger:tagsReset',function (e) { 
+               console.log("Tags reset!");
+             });
+
+             tagger.addEventListener('VanillaTagger:popupClosedByClick',function (e) { 
+               console.log("Popup closed by click for tag: " + JSON.stringify(e.detail));
+             });
+             
              tagger.addEventListener('VanillaTagger:tagClick',function (e) { 
                console.log("Tag clicked: " + JSON.stringify(e.detail));
              });
