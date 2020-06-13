@@ -368,6 +368,24 @@
   pointer-events: inherit;
 }
 
+.popup.closeable .close {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.popup.closeable .close:after {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  content: "\00D7";
+  cursor: pointer;
+}
+
 /* COLORS */
 
 .popup.black {

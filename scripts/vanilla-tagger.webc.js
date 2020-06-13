@@ -1,12 +1,11 @@
 "use strict";
 
-//TODO closeable popup
-//TODO: CSS classes/methods to hide/restore a specific tag / all tags
-//TODO: add method to update popup
+//TODO: CSS classes/methods to higlight a specific tag and dim all other tags
+//TODO: add public method to update & reposition popup
+//TODO: summary / navigation example
 //TODO: loading/missing/error states (CSS only)
 //TODO: sync state/attributes in method calls (?)
 //TODO: add other icons (CSS)
-//TODO: summary / navigation
 //TODO: breakpoints as data- in :host
 
 (function () {
@@ -94,7 +93,7 @@
         return false;
 
       if (name === "data-img") host.loadImage();
-      else if (name === "data-tags") host.loadTags(undefined, true);
+      else if (name === "data-tags") host.loadTags();
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -107,6 +106,7 @@
         return false;
       }
 
+      host.classList.add("updating");
       wrapper.classList.add("img-loading");
 
       const imgObj = await _fetchImage(src || host.dataset.img)
@@ -120,11 +120,15 @@
           wrapper.classList.remove("img-loading");
         });
 
-      wrapper.classList.add("img-loaded");
-
       let img = wrapper.querySelector("img") || document.createElement("img");
       img.setAttribute("src", imgObj.src);
-      wrapper.appendChild(img);
+
+      if (!wrapper.classList.contains("img-loaded"))
+        //didn't have an image loaded before
+        wrapper.appendChild(img);
+
+      wrapper.classList.add("img-loaded");
+      host.classList.remove("updating");
 
       _throwsEvent("imgLoaded", {
         src: imgObj.src,
@@ -135,9 +139,7 @@
 
     /*-----------------------------------------------------------------------------------------*/
 
-    loadTags(jsonTags, reset) {
-      host.resetTags();
-
+    loadTags(jsonTags) {
       if (!jsonTags && !host.dataset.tags) {
         console.warn(
           "No attribute 'data-tags' found nor 'tags' parameter passed to method 'loadTags'"
@@ -145,7 +147,11 @@
         return false;
       }
 
+      host.resetTags();
+
       try {
+        host.classList.add("updating");
+
         tags = jsonTags ? jsonTags : JSON.parse(host.dataset.tags);
 
         tags.forEach(function (tag, index) {
@@ -156,6 +162,8 @@
         _throwsEvent("tagsLoaded", tags);
       } catch (err) {
         throw new VanillaTaggerError(`Error parsing tags data => ${err}`);
+      } finally {
+        host.classList.remove("updating");
       }
     }
 
@@ -164,6 +172,8 @@
     resetTags() {
       try {
         if (!wrapper) return true;
+
+        host.classList.add("updating");
 
         let allTags = wrapper.querySelectorAll(".tag, .popup");
 
@@ -176,6 +186,8 @@
         _throwsEvent("tagsReset");
       } catch (err) {
         throw new VanillaTaggerError(`Error resetting tags => ${err}`);
+      } finally {
+        host.classList.remove("updating");
       }
     }
 
@@ -497,6 +509,19 @@
       config.classes.split(" ").forEach(function (cl, index) {
         popup.classList.add(cl);
       });
+
+      if (popup.classList.contains("closeable")) {
+        let closeButton = document.createElement("a");
+        closeButton.classList.add("close");
+
+        closeButton.addEventListener("click", function (e) {
+          tag.removeClass("show-popup");
+          tag.removeClass("toggled");
+          _throwsEvent("popupClosedByClick", tag);
+        });
+
+        popup.appendChild(closeButton);
+      }
 
       wrapper.insertBefore(popup, element.nextSibling); //insertAfter
 
