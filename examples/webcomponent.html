@@ -275,13 +275,13 @@
 
       /*-----------------------------------------------------------------------------------------*/
 
-      const loadImperative = function loadImperative(json) {
+      const loadByProperty = function loadByProperty(json) {
         tagger.tags = json;
       };
 
       /*-----------------------------------------------------------------------------------------*/
 
-      const loadDeclarative = function loadDeclarative(json) {
+      const loadByAttribute = function loadByAttribute(json) {
         tagger.dataset.tags = JSON.stringify(json);
       };
 
@@ -386,12 +386,12 @@
 
     <button onclick="toggleAllPopups()"><b>Toggle all popups</b></button>
     &nbsp;
-    <button onclick="loadImperative(dots)"><b>Load dots</b></button>
+    <button onclick="loadByProperty(dots)"><b>Load dots</b></button>
     &nbsp;
-    <button onclick="loadDeclarative(hotboxes)"><b>Load hotboxes</b></button>
+    <button onclick="loadByAttribute(hotboxes)"><b>Load hotboxes</b></button>
     &nbsp;
-    <button onclick="loadImperative(dots.concat(hotboxes))">
-      <b>ReLoad all tags</b>
+    <button onclick="loadByProperty(dots.concat(hotboxes))">
+      <b>Reload all tags</b>
     </button>
     &nbsp;
     <button onclick="downloadTags()"><b>Download tags JSON</b></button>
