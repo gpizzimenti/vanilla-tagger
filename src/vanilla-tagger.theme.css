@@ -360,8 +360,8 @@
   max-width: var(--popup-maxwidth);
   opacity: 0;
   transition: opacity 0.4s ease-in-out 0.3s, transform 0.3s ease-in-out 0.4s,
-    z-index 0.7s linear;
-  will-change: opacity, transform, z-index;
+    z-index 0.7s linear, left 0.1s linear, top 0.1s linear;
+  will-change: opacity, transform, z-index, left, top;
   backface-visibility: hidden;
   border-radius: 3px;
   box-shadow: var(--shadow);

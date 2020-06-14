@@ -134,6 +134,12 @@
     }
 
     /*----------------------------------------------------------------------------------------*/
+
+    getTagByIndex(index) {
+      return { ...tags[index] };
+    }
+
+    /*----------------------------------------------------------------------------------------*/
   } //END WEBCOMPONENT CLASS
 
   /*------------------------------------------------------------------------------------------*/
@@ -216,6 +222,7 @@
           currentWidth = parseInt(cr.width, 10);
 
         _checkFormat(currentWidth);
+        _repositionVisiblePopups();
       }
     });
 
@@ -628,6 +635,24 @@
         `Error repositioning popup for tag => ${err}`
       );
     }
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _repositionVisiblePopups = function _repositionPopups() {
+    let popups = wrapper.querySelectorAll(".popup"),
+      visibilePopus = [...popups]
+        .filter(function (popup) {
+          return (
+            parseInt(getComputedStyle(popup).getPropertyValue("opacity"), 10) >
+            0
+          );
+        })
+        .forEach(function (popup) {
+          requestAnimationFrame(function () {
+            _repositionPopup(tags[popup.dataset.index]);
+          });
+        });
   };
 
   /*-----------------------------------------------------------------------------------------*/
