@@ -643,8 +643,11 @@
           element.addEventListener(eventName, function (e) {
             _throwEvent(eventNameToThrow, tag);
 
-            if (eventName === "click" || eventName === "mouseover")
-              _repositionPopup(tag);
+            if (eventName === "click" || eventName === "mouseover") {
+              requestAnimationFrame(function () {
+                _repositionPopup(tag);
+              });
+            }
 
             if (eventName === "click") tag.toggleClass("toggled");
 
