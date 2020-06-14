@@ -30,6 +30,7 @@
         display: inline-block;
         box-sizing: border-box;
         contain: layout;
+        all: initial;
     }
 
     :host([hidden]) { display: none }
