@@ -294,6 +294,21 @@
       responsiveness
     </h1>
 
+    <button onclick="toggleAllPopups()"><b>Toggle all popups</b></button>
+    &nbsp;
+    <button onclick="loadByProperty(dots)"><b>Load dots</b></button>
+    &nbsp;
+    <button onclick="loadByAttribute(hotboxes)"><b>Load hotboxes</b></button>
+    &nbsp;
+    <button onclick="loadByProperty(dots.concat(hotboxes))">
+      <b>Reload all tags</b>
+    </button>
+    &nbsp;
+    <button onclick="downloadTags()"><b>Download tags JSON</b></button>
+
+    <br />
+    <br />
+
     <vanilla-tagger
       id="v-tagger"
       src="https://images.unsplash.com/photo-1493134799591-2c9eed26201a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
@@ -383,17 +398,5 @@
 
     <br />
     <br />
-
-    <button onclick="toggleAllPopups()"><b>Toggle all popups</b></button>
-    &nbsp;
-    <button onclick="loadByProperty(dots)"><b>Load dots</b></button>
-    &nbsp;
-    <button onclick="loadByAttribute(hotboxes)"><b>Load hotboxes</b></button>
-    &nbsp;
-    <button onclick="loadByProperty(dots.concat(hotboxes))">
-      <b>Reload all tags</b>
-    </button>
-    &nbsp;
-    <button onclick="downloadTags()"><b>Download tags JSON</b></button>
   </body>
 </html>
