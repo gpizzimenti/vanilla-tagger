@@ -1,7 +1,6 @@
 "use strict";
 
 //TODO: CSS classes/methods to higlight a specific tag and dim all other tags
-//TODO: add public method to update & reposition popup
 //TODO: summary / navigation example
 //TODO: loading/missing/error states (CSS only)
 //TODO: sync state/attributes in method calls (?)
@@ -18,6 +17,7 @@
     tags = [],
     resizeObserver,
     loggedWidth,
+    reservedClasses = ["tag", "popup", "dot", "hotspot", "area"],
     breakpoints = {
       small: 640, //default.. you can alter this through the "--format-small-trigger" CSS variable in vanilla-tagger.theme.css
     };
@@ -29,6 +29,7 @@
     :host{
         display: inline-block;
         box-sizing: border-box;
+        contain: layout;
     }
 
     :host([hidden]) { display: none }
@@ -59,7 +60,11 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const themeUrl = "styles/vanilla-tagger.theme.css";
+  const themeUrl =
+    document.currentScript.src.substring(
+      0,
+      document.currentScript.src.lastIndexOf("/") + 1
+    ) + "vanilla-tagger.theme.css";
 
   /*-----------------------------------------------------------------------------------------*/
   /*---------------------------------- WEBCOMPONENT CLASS -----------------------------------*/
@@ -67,18 +72,44 @@
 
   class VanillaTagger extends HTMLElement {
     static get observedAttributes() {
-      return ["data-img", "data-tags"];
+      return ["src", "data-tags"];
     }
+
+    /*--------------------------------- CLASS METHODS ---------------------------------------*/
 
     constructor() {
       super();
       (host = this), host.attachShadow({ mode: "open" });
     }
 
-    /*--------------------------------- CLASS METHODS ---------------------------------------*/
+    /*----------------------------------------------------------------------------------------*/
+
+    get src() {
+      return host.getAttribute("src");
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    set src(value) {
+      host.setAttribute("src", value);
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    get tags() {
+      return tags;
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    set tags(value) {
+      host.dataset.tags = JSON.stringify(value);
+    }
+
+    /*----------------------------------------------------------------------------------------*/
 
     connectedCallback() {
-      _createComponent();
+      _render();
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -92,109 +123,14 @@
       )
         return false;
 
-      if (name === "data-img") host.loadImage();
-      else if (name === "data-tags") host.loadTags();
-    }
-
-    /*----------------------------------------------------------------------------------------*/
-
-    async loadImage(src) {
-      if (!src && !host.dataset.img) {
-        console.warn(
-          "No attribute 'data-img' found nor 'src' parameter passed to method 'loadImage'"
-        );
-        return false;
-      }
-
-      host.classList.add("updating");
-      wrapper.classList.add("img-loading");
-
-      const imgObj = await _fetchImage(src || host.dataset.img)
-        .catch(() => {
-          wrapper.classList.add("img-missing");
-          throw new VanillaTaggerError(
-            `Can't load image => ${host.dataset.img}`
-          );
-        })
-        .finally(() => {
-          wrapper.classList.remove("img-loading");
-        });
-
-      let img = wrapper.querySelector("img") || document.createElement("img");
-      img.setAttribute("src", imgObj.src);
-
-      if (!wrapper.classList.contains("img-loaded"))
-        //didn't have an image loaded before
-        wrapper.appendChild(img);
-
-      wrapper.classList.add("img-loaded");
-      host.classList.remove("updating");
-
-      _throwEvent("imgLoaded", {
-        src: imgObj.src,
-        width: imgObj.width,
-        height: imgObj.height,
-      });
+      if (name === "src") _loadImage();
+      else if (name === "data-tags") _loadTags();
     }
 
     /*-----------------------------------------------------------------------------------------*/
 
-    loadTags(jsonTags) {
-      if (!jsonTags && !host.dataset.tags) {
-        console.warn(
-          "No attribute 'data-tags' found nor 'tags' parameter passed to method 'loadTags'"
-        );
-        return false;
-      }
-
-      if (tags.length > 0) host.resetTags();
-
-      try {
-        host.classList.add("updating");
-
-        tags = jsonTags ? jsonTags : JSON.parse(host.dataset.tags);
-
-        tags.forEach(function (tag, index) {
-          tag.index = index + 1;
-          _addTag(tag);
-        });
-
-        _throwEvent("tagsLoaded", tags);
-      } catch (err) {
-        throw new VanillaTaggerError(`Error parsing tags data => ${err}`);
-      } finally {
-        host.classList.remove("updating");
-      }
-    }
-
-    /*-----------------------------------------------------------------------------------------*/
-
-    resetTags() {
-      try {
-        if (!wrapper) return true;
-
-        host.classList.add("updating");
-
-        let allTags = wrapper.querySelectorAll(".tag, .popup");
-
-        allTags.forEach(function (el) {
-          wrapper.removeChild(el);
-        });
-
-        tags = [];
-
-        _throwEvent("tagsReset");
-      } catch (err) {
-        throw new VanillaTaggerError(`Error resetting tags => ${err}`);
-      } finally {
-        host.classList.remove("updating");
-      }
-    }
-
-    /*-----------------------------------------------------------------------------------------*/
-
-    toggleAllPopups(force) {
-      wrapper.classList.toggle("show-allpopups", force);
+    toggleAllPopups() {
+      wrapper.classList.toggle("show-allpopups");
     }
 
     /*-----------------------------------------------------------------------------------------*/
@@ -216,10 +152,10 @@
   /*------------------------------------- PRIVATE METHODS -----------------------------------*/
   /*-------------------------------------------------------------------------------------------*/
 
-  const _createComponent = async function _createComponent() {
+  const _render = async function _render() {
     host.classList.add("loading");
 
-    await _applyStyles();
+    await _applyStyles(); //no FOUC + we need correct dimensions to render popups correctly
 
     wrapper = document.createElement("figure");
     wrapper.classList.add("wrapper");
@@ -232,7 +168,7 @@
     _throwEvent("componentCreated");
 
     //we don't use slotted elements, to achieve maximum incapsulation
-    host.loadImage().then(host.loadTags);
+    _loadImage().then(_loadTags);
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -245,8 +181,6 @@
     const link = await _fetchStyle(themeUrl).catch(() => {
       throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
     });
-
-    host.shadowRoot.appendChild(link);
 
     const smallBp = getComputedStyle(host).getPropertyValue(
       "--format-small-trigger"
@@ -338,6 +272,45 @@
     host.dispatchEvent(evt);
   };
 
+  /*----------------------------------------------------------------------------------------*/
+
+  const _loadImage = async function _loadImage() {
+    if (!host.getAttribute("src")) {
+      console.warn("No 'src' parameter set");
+      return false;
+    }
+
+    host.classList.add("updating");
+    wrapper.classList.add("img-loading");
+
+    const imgObj = await _fetchImage(host.getAttribute("src"))
+      .catch(() => {
+        wrapper.classList.add("img-missing");
+        throw new VanillaTaggerError(
+          `Can't load image => ${host.getAttribute("src")}`
+        );
+      })
+      .finally(() => {
+        wrapper.classList.remove("img-loading");
+      });
+
+    let img = wrapper.querySelector("img") || document.createElement("img");
+    img.setAttribute("src", imgObj.src);
+
+    if (!wrapper.classList.contains("img-loaded"))
+      //didn't have an image loaded before
+      wrapper.appendChild(img);
+
+    wrapper.classList.add("img-loaded");
+    host.classList.remove("updating");
+
+    _throwEvent("imgLoaded", {
+      src: imgObj.src,
+      width: imgObj.width,
+      height: imgObj.height,
+    });
+  };
+
   /*-----------------------------------------------------------------------------------------*/
 
   const _fetchImage = async function _fetchImage(src) {
@@ -347,6 +320,52 @@
       img.onerror = reject;
       img.src = src;
     });
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _loadTags = function _loadTags() {
+    if (!host.dataset.tags) {
+      console.warn("No attribute 'data-tags' found");
+      return false;
+    }
+
+    if (tags.length > 0) _resetTags();
+
+    try {
+      host.classList.add("updating");
+
+      tags = JSON.parse(host.dataset.tags);
+
+      tags.forEach(function (tag, index) {
+        tag.index = index + 1;
+        _addTag(tag);
+      });
+
+      _throwEvent("tagsLoaded", tags);
+    } catch (err) {
+      throw new VanillaTaggerError(`Error parsing tags data => ${err}`);
+    } finally {
+      host.classList.remove("updating");
+    }
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _resetTags = function _resetTags() {
+    try {
+      if (!wrapper) return true;
+
+      let allElements = wrapper.querySelectorAll(".tag, .popup");
+
+      allElements.forEach(function (el) {
+        wrapper.removeChild(el);
+      });
+
+      tags = [];
+    } catch (err) {
+      throw new VanillaTaggerError(`Error resetting tags => ${err}`);
+    }
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -414,29 +433,48 @@
   const _attachMethods = function _attachMethods(tag) {
     try {
       tag.addClass = function (className) {
-        return _addClass(_getElement(tag), className);
+        tag.classes = tag.classes + " " + className;
+        return _addClass(_getElement(tag), className, tag);
       };
       tag.removeClass = function (className) {
-        return _removeClass(_getElement(tag), className);
+        tag.classes = tag.classes
+          .replace(className, "")
+          .replace("  ", " ")
+          .trim();
+        return _removeClass(_getElement(tag), className, tag);
       };
-      tag.toggleClass = function (className, force) {
-        return _toggleClass(_getElement(tag), className, force);
+      tag.toggleClass = function (className) {
+        if (tag.classes.indexOf(className) > -1) tag.removeClass(className);
+        else tag.addClass(className);
       };
       tag.hasClass = function (className) {
         return _hasClass(_getElement(tag), className);
       };
 
       tag.addClassToPopup = function (className) {
-        return _addClass(_getPopupElement(tag), className);
+        tag.popup.classes = tag.popup.classes + " " + className;
+        return _addClass(_getPopupElement(tag), className, tag);
       };
       tag.removeClassFromPopup = function (className) {
-        return _removeClass(_getPopupElement(tag), className);
+        tag.popup.classes = tag.popup.classes
+          .replace(className, "")
+          .replace("  ", " ")
+          .trim();
+        return _removeClass(_getPopupElement(tag), className, tag);
       };
       tag.toggleClassOfPopup = function (className, force) {
-        return _toggleClass(_getPopupElement(tag), className, force);
+        if (tag.popup.classes.indexOf(className) > -1)
+          tag.popup.removeClass(className);
+        else tag.popup.addClass(className);
       };
       tag.popupHasClass = function (className) {
         return _hasClass(_getPopupElement(tag), className);
+      };
+
+      tag.setPopup = function (popup) {
+        tag.popup = popup;
+        wrapper.removeChild(_getPopupElement(tag));
+        _attachPopup(_getElement(tag), tag);
       };
     } catch (err) {
       console.warn("Can't attach methods to tag:" + JSON.stringify(tag));
@@ -458,26 +496,20 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _addClass = function _addClass(el, className) {
-    return el.classList.add(className);
+  const _addClass = function _addClass(element, className) {
+    element.classList.add(className);
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _removeClass = function _removeClass(el, className) {
-    return el.classList.remove(className);
+  const _removeClass = function _removeClass(element, className) {
+    element.classList.remove(className);
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _toggleClass = function _toggleClass(el, className, force) {
-    return el.classList.toggle(className, force);
-  };
-
-  /*-----------------------------------------------------------------------------------------*/
-
-  const _hasClass = function _hasClass(el, className) {
-    return el.classList.contains(className);
+  const _hasClass = function _hasClass(element, className) {
+    return element.classList.contains(className);
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -610,6 +642,9 @@
 
           element.addEventListener(eventName, function (e) {
             _throwEvent(eventNameToThrow, tag);
+
+            if (eventName === "click" || eventName === "mouseover")
+              _repositionPopup(tag);
 
             if (eventName === "click") tag.toggleClass("toggled");
 

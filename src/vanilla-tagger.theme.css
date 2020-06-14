@@ -384,7 +384,7 @@
   top: 0;
 }
 
-.popup.closeable .close:after {
+.popup.closeable .close::after {
   display: inline-block;
   width: 30px;
   height: 30px;
