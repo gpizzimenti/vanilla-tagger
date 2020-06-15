@@ -144,8 +144,6 @@
 
       if (options.state) {
         wrapper.classList.add("dim-alltags");
-        options.tag.addClass("highlight");
-        if (options.showPopup) options.tag.addClass("show-popup");
 
         if (options.exclusive) {
           hightlightedTags.forEach(function (tag) {
@@ -153,6 +151,9 @@
             tag.removeClass("show-popup");
           });
         }
+
+        options.tag.addClass("highlight");
+        if (options.showPopup) options.tag.addClass("show-popup");
       } else {
         options.tag.removeClass("highlight");
         options.tag.removeClass("show-popup");
