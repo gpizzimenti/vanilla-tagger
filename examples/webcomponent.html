@@ -72,51 +72,51 @@
             index: 5,
             id: "tag-5",
           },
+        ],
+        hotboxes = [
+          {
+            top: 17.2,
+            left: 4.9,
+            height: 36.5,
+            width: 6.7,
+            classes: "xlight with-shadow show-index pulsating-onhover",
+            index: 6,
+            id: "tag-6",
+          },
+          {
+            top: 25.6036,
+            left: 84.8,
+            height: 34.8733,
+            width: 6.6,
+            classes: "xlight with-shadow with-border show-index",
+            popup: {
+              classes: "xdark",
+              arrow: "top",
+              position: "left",
+              content:
+                "A<br/>very,<br/>very,<br/>very,<br/>very,<br/>very,<br/>tall<br/>skyscraper<br/>(but, at last<br/>this popup<br/>is aligned<br/>on top)",
+            },
+            index: 7,
+            id: "tag-7",
+          },
+          {
+            top: 50.1937,
+            left: 28.6,
+            height: 10.5812,
+            width: 30.4,
+            classes:
+              "xlight with-shadow with-border show-caption pulsating-onhover responsive",
+            caption: "A complex of condos",
+            popup: {
+              classes: "xdark",
+              arrow: "center",
+              position: "bottom",
+              content: "This tag has a caption",
+            },
+            index: 8,
+            id: "tag-8",
+          },
         ];
-      hotboxes = [
-        {
-          top: 17.2,
-          left: 4.9,
-          height: 36.5,
-          width: 6.7,
-          classes: "xlight with-shadow show-index pulsating-onhover",
-          index: 6,
-          id: "tag-6",
-        },
-        {
-          top: 25.6036,
-          left: 84.8,
-          height: 34.8733,
-          width: 6.6,
-          classes: "xlight with-shadow with-border show-index",
-          popup: {
-            classes: "xdark",
-            arrow: "top",
-            position: "left",
-            content:
-              "A<br/>very,<br/>very,<br/>very,<br/>very,<br/>very,<br/>tall<br/>skyscraper<br/>(but, at last<br/>this popup<br/>is aligned<br/>on top)",
-          },
-          index: 7,
-          id: "tag-7",
-        },
-        {
-          top: 50.1937,
-          left: 28.6,
-          height: 10.5812,
-          width: 30.4,
-          classes:
-            "xlight with-shadow with-border show-caption pulsating-onhover responsive",
-          caption: "A complex of condos",
-          popup: {
-            classes: "xdark",
-            arrow: "center",
-            position: "bottom",
-            content: "This tag has a caption",
-          },
-          index: 8,
-          id: "tag-8",
-        },
-      ];
 
       /*-----------------------------------------------------------------------------------------*/
 
@@ -286,6 +286,20 @@
       };
 
       /*-----------------------------------------------------------------------------------------*/
+
+      const highlightTag = function highlightTag(index) {
+        let tag = tagger.getTagByIndex(index),
+          options = {
+            tag: tag,
+            state: true,
+            exclusive: true,
+            showPopup: true,
+          };
+
+        tagger.highlightTag(options);
+      };
+
+      /*-----------------------------------------------------------------------------------------*/
     </script>
   </head>
   <body>
@@ -302,6 +316,14 @@
     &nbsp;
     <button onclick="loadByProperty(dots.concat(hotboxes))">
       <b>Reload all tags</b>
+    </button>
+    &nbsp;
+    <button onclick="highlightTag(5)">
+      <b>Highlight Tag #5</b>
+    </button>
+    &nbsp;
+    <button onclick="highlightTag(7)">
+      <b>Highlight Tag #7</b>
     </button>
     &nbsp;
     <button onclick="downloadTags()"><b>Download tags JSON</b></button>

@@ -147,6 +147,14 @@
   animation: grey-pulse 1.5s infinite;
 }
 
+.dim-alltags .tag {
+  opacity: 0.3;
+}
+
+.tag.highlight {
+  opacity: 1;
+}
+
 /*---------------------------- ANIMATIONS---------------------------- */
 
 @keyframes red-pulse {

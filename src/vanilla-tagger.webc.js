@@ -1,9 +1,7 @@
 "use strict";
 
-//TODO: CSS classes/methods to higlight a specific tag and dim all other tags
 //TODO: summary / navigation example
-//TODO: loading/missing/error states (CSS only)
-//TODO: sync state/attributes in method calls (?)
+//TODO: loading/missing/error states (CSS)
 //TODO: add other icons (CSS)
 //TODO: breakpoints as data- in :host
 
@@ -129,14 +127,45 @@
 
     /*----------------------------------------------------------------------------------------*/
 
-    toggleAllPopups() {
-      wrapper.classList.toggle("show-allpopups");
+    getTagByIndex(index) {
+      return tags[index - 1];
     }
 
     /*----------------------------------------------------------------------------------------*/
 
-    getTagByIndex(index) {
-      return { ...tags[index] };
+    highlightTag(options) {
+      let hightlightedTags = [];
+
+      if (!options.state || options.exclusive) {
+        hightlightedTags = tags.filter(function (tag) {
+          return tag.hasClass("highlight");
+        });
+      }
+
+      if (options.state) {
+        wrapper.classList.add("dim-alltags");
+        options.tag.addClass("highlight");
+        if (options.showPopup) options.tag.addClass("show-popup");
+
+        if (options.exclusive) {
+          hightlightedTags.forEach(function (tag) {
+            tag.removeClass("highlight");
+            tag.removeClass("show-popup");
+          });
+        }
+      } else {
+        options.tag.removeClass("highlight");
+        options.tag.removeClass("show-popup");
+
+        if (hightlightedTags.length < 2)
+          wrapper.classList.remove("dim-alltags");
+      }
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    toggleAllPopups(force) {
+      wrapper.classList.toggle("show-allpopups", force);
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -221,8 +250,12 @@
         const cr = entry.contentRect,
           currentWidth = parseInt(cr.width, 10);
 
-        _checkFormat(currentWidth);
-        _repositionVisiblePopups();
+        requestAnimationFrame(function () {
+          _checkFormat(currentWidth);
+        });
+        requestAnimationFrame(function () {
+          _repositionVisiblePopups();
+        });
       }
     });
 
@@ -341,6 +374,9 @@
 
     try {
       host.classList.add("updating");
+
+      wrapper.classList.remove("dim-alltags");
+      wrapper.classList.remove("show-allpopups");
 
       tags = JSON.parse(host.dataset.tags);
 
