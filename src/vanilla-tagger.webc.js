@@ -134,6 +134,8 @@
     /*----------------------------------------------------------------------------------------*/
 
     highlightTag(options) {
+      if (!options || !options.tag) return false;
+
       let hightlightedTags = [];
 
       if (!options.state || options.exclusive) {
