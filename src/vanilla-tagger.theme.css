@@ -802,14 +802,14 @@
 /* POPUP ON TOP + ARROW TO THE LEFT */
 
 .dot + .popup.top.arrow-left {
-  transform: translate(-20%, -50px);
+  transform: translate(-10%, -50px);
 }
 
 .dot:hover + .popup.hover.top.arrow-left,
 .dot.toggled + .popup.toggle.top.arrow-left,
 .dot.show-popup + .popup.top.arrow-left,
 .show-allpopups .dot + .popup.top.arrow-left {
-  transform: translate(-20%, -35px);
+  transform: translate(-10%, -35px);
 }
 
 .dot.small:hover + .popup.hover.top.arrow-left,
@@ -820,7 +820,7 @@
 .small-format .dot.responsive.toggled + .popup.toggle.top.arrow-left,
 .small-format .dot.responsive.show-popup + .popup.top.arrow-left,
 .show-allpopups.small-format .dot.responsive + .popup.top.arrow-left {
-  transform: translate(-20%, -25px);
+  transform: translate(-10%, -25px);
 }
 
 .hotspot + .popup.top.arrow-left {
@@ -872,14 +872,14 @@
 /* POPUP ON TOP + ARROW TO THE RIGHT */
 
 .dot + .popup.top.arrow-right {
-  transform: translate(-80%, -50px);
+  transform: translate(-90%, -50px);
 }
 
 .dot:hover + .popup.hover.top.arrow-right,
 .dot.toggled + .popup.toggle.top.arrow-right,
 .dot.show-popup + .popup.top.arrow-right,
 .show-allpopups .dot + .popup.top.arrow-right {
-  transform: translate(-80%, -35px);
+  transform: translate(-90%, -35px);
 }
 
 .dot.small:hover + .popup.hover.top.arrow-right,
@@ -890,7 +890,7 @@
 .small-format .dot.responsive.toggled + .popup.toggle.top.arrow-right,
 .small-format .dot.responsive.show-popup + .popup.top.arrow-right,
 .show-allpopups.small-format .dot.responsive + .popup.top.arrow-right {
-  transform: translate(-80%, -25px);
+  transform: translate(-93%, -25px);
 }
 
 .hotspot + .popup.top.arrow-right {

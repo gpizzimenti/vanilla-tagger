@@ -1,6 +1,7 @@
 "use strict";
 
 //TODO: summary / navigation example
+//TODO: alphabetical index
 //TODO: loading/missing/error states (CSS)
 //TODO: add other icons (CSS)
 //TODO: breakpoints as data- in :host
@@ -590,7 +591,7 @@
 
   const _repositionPopup = function _repositionPopup(tag) {
     try {
-      if (!tag.popup) return false;
+      if (!tag || !tag.popup) return false;
 
       let element = _getElement(tag),
         popup = _getPopupElement(tag);
