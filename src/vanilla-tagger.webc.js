@@ -134,35 +134,7 @@
     /*----------------------------------------------------------------------------------------*/
 
     highlightTag(options) {
-      if (!options || !options.tag) return false;
-
-      let hightlightedTags = [];
-
-      if (!options.state || options.exclusive) {
-        hightlightedTags = tags.filter(function (tag) {
-          return tag.hasClass("highlight");
-        });
-      }
-
-      if (options.state) {
-        wrapper.classList.add("dim-alltags");
-
-        if (options.exclusive) {
-          hightlightedTags.forEach(function (tag) {
-            tag.removeClass("highlight");
-            tag.removeClass("show-popup");
-          });
-        }
-
-        options.tag.addClass("highlight");
-        if (options.showPopup) options.tag.addClass("show-popup");
-      } else {
-        options.tag.removeClass("highlight");
-        options.tag.removeClass("show-popup");
-
-        if (hightlightedTags.length < 2)
-          wrapper.classList.remove("dim-alltags");
-      }
+      _highlightTag(options);
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -692,6 +664,39 @@
             _repositionPopup(tags[popup.dataset.index]);
           });
         });
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _highlightTag = function _highlightTag(options) {
+    if (!options || !options.tag) return false;
+
+    let hightlightedTags = [];
+
+    if (!options.state || options.exclusive) {
+      hightlightedTags = tags.filter(function (tag) {
+        return tag.hasClass("highlight");
+      });
+    }
+
+    if (options.state) {
+      wrapper.classList.add("dim-alltags");
+
+      if (options.exclusive) {
+        hightlightedTags.forEach(function (tag) {
+          tag.removeClass("highlight");
+          tag.removeClass("show-popup");
+        });
+      }
+
+      options.tag.addClass("highlight");
+      if (options.showPopup) options.tag.addClass("show-popup");
+    } else {
+      options.tag.removeClass("highlight");
+      options.tag.removeClass("show-popup");
+
+      if (hightlightedTags.length < 2) wrapper.classList.remove("dim-alltags");
+    }
   };
 
   /*-----------------------------------------------------------------------------------------*/
