@@ -671,14 +671,22 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _highlightTag = function _highlightTag(options) {
-    if (!options || !options.tag) return false;
-
     let hightlightedTags = [];
 
-    if (!options.state || options.exclusive) {
+    if (!options || !options.tag || !options.state || options.exclusive) {
       hightlightedTags = tags.filter(function (tag) {
         return tag.hasClass("highlight");
       });
+    }
+
+    if (!options || !options.tag) {
+      hightlightedTags.forEach(function (tag) {
+        tag.removeClass("highlight");
+        tag.removeClass("show-popup");
+      });
+
+      wrapper.classList.remove("dim-alltags");
+      return false;
     }
 
     if (options.state) {

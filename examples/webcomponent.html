@@ -254,7 +254,7 @@
           position: "right",
           showOn: "toggle",
           content:
-            "<b>Info on this tag</b><p>This popup has been dinamically added to this tag,<br/> to tell you that this tag is responsive, has no icon ,<br/> a visible index and functions attached to the <br/>mouseover / mouseout / click events via event listeners.<br/><br/><i>Also, you can click the tag to toggle this popup,<br/> or click the top-right '&times;' button to close it!</i>",
+            "<b>Info on this tag</b><p>This popup has been dinamically added to this tag,<br/> to tell you that this tag is responsive, has no icon,<br/> a visible index and functions attached to the <br/>mouseover / mouseout / click events via event listeners.<br/><br/><i>Also, you can click the tag to toggle this popup,<br/> or click the top-right '&times;' button to close it!</i>",
         };
 
         setTimeout(function () {
@@ -315,6 +315,10 @@
     </script>
 
     <style>
+      body {
+        font-family: sans-serif;
+      }
+
       button {
         margin: 5px 0;
       }
@@ -326,6 +330,19 @@
       window for responsiveness
     </h1>
 
+    <b>Highlight TAG #</b>
+    <select onclick="highlightTag(this.value)">
+      <option value="0">All</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+    </select>
+    &nbsp;
     <button onclick="toggleAllPopups()"><b>Toggle all popups</b></button>
     &nbsp;
     <button onclick="loadByProperty(dots)"><b>Load dots</b></button>
@@ -334,14 +351,6 @@
     &nbsp;
     <button onclick="loadByProperty(dots.concat(hotboxes))">
       <b>Reload all tags</b>
-    </button>
-    &nbsp;
-    <button onclick="highlightTag(5)">
-      <b>Highlight Tag #5</b>
-    </button>
-    &nbsp;
-    <button onclick="highlightTag(7)">
-      <b>Highlight Tag #7</b>
     </button>
     &nbsp;
     <button onclick="downloadTags()"><b>Download tags JSON</b></button>
