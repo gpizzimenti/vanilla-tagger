@@ -375,8 +375,8 @@
   backface-visibility: hidden;
   border-radius: 3px;
   box-shadow: var(--shadow);
-  z-index: 0;
   pointer-events: none;
+  z-index: 2;
 }
 
 .tag:hover + .popup.hover,
@@ -384,7 +384,6 @@
 .tag.show-popup + .popup,
 .show-allpopups .tag + .popup {
   opacity: 1;
-  z-index: 2;
   pointer-events: inherit;
 }
 
