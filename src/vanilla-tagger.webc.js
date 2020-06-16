@@ -451,7 +451,8 @@
   const _attachMethods = function _attachMethods(tag) {
     try {
       tag.addClass = function (className) {
-        tag.classes = tag.classes + " " + className;
+        if (tag.classes.indexOf(className) < 0)
+          tag.classes = tag.classes + " " + className;
         return _addClass(_getElement(tag), className, tag);
       };
       tag.removeClass = function (className) {
@@ -470,7 +471,8 @@
       };
 
       tag.addClassToPopup = function (className) {
-        tag.popup.classes = tag.popup.classes + " " + className;
+        if (tag.popup.classes.indexOf(className) < 0)
+          tag.popup.classes = tag.popup.classes + " " + className;
         return _addClass(_getPopupElement(tag), className, tag);
       };
       tag.removeClassFromPopup = function (className) {
