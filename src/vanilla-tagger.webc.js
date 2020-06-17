@@ -1,6 +1,5 @@
 "use strict";
 
-//TODO: summary / navigation example
 //TODO: loading/missing/error states (CSS)
 //TODO: add other icons (CSS)
 //TODO: breakpoints as data- in :host
