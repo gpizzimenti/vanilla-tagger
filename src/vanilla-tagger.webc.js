@@ -1,7 +1,6 @@
 "use strict";
 
 //TODO: summary / navigation example
-//TODO: alphabetical index
 //TODO: loading/missing/error states (CSS)
 //TODO: add other icons (CSS)
 //TODO: breakpoints as data- in :host
@@ -424,6 +423,7 @@
     try {
       element.classList.add("tag");
       element.dataset.index = tag.index;
+      element.dataset.alphabeticalIndex = _alphabeticalIndex(tag.index);
       element.style.top = `${tag.top}%`;
       element.style.left = `${tag.left}%`;
       if (tag.caption) element.dataset.caption = tag.caption;
@@ -453,6 +453,19 @@
         `Error attaching properties to tag => ${err}`
       );
     }
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _alphabeticalIndex = function _alphabeticalIndex(index) {
+    let str = "",
+      multiples = Math.ceil(index / 26),
+      charAtCode = index - (multiples - 1) * 26;
+
+    for (let i = 0; i < multiples; i++)
+      str += String.fromCharCode(charAtCode + 64);
+
+    return str;
   };
 
   /*-----------------------------------------------------------------------------------------*/

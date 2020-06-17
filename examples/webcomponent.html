@@ -16,7 +16,7 @@
             top: 20,
             left: 20,
             classes:
-              "light with-border pulsating-onhover show-index-ontop icon-camera responsive",
+              "light with-border pulsating-onhover show-index show-index-ontop icon-camera responsive",
             link: {
               href: "https://www.linkedin.com/in/giuseppepizzimenti/",
               target: "_blank",
@@ -230,14 +230,14 @@
           action = tag.hasClass("shape-marker-full") ? "icon" : "shape",
           decision = confirm(message + question);
 
+        tag.addClass("show-index");
+
         if (decision && action === "shape") {
           tag.removeClass("icon-marker");
           tag.removeClass("show-index-ontop");
           tag.addClass("shape-marker-full");
-          tag.addClass("show-index");
         } else if (decision && action === "icon") {
           tag.removeClass("shape-marker-full");
-          tag.removeClass("show-index");
           tag.addClass("icon-marker");
           tag.addClass("show-index-ontop");
         }
@@ -364,7 +364,7 @@
       data-tags='[{
                         "top": 20,
                         "left": 20,
-                        "classes": "light with-border pulsating-onhover show-index-ontop icon-camera responsive",
+                        "classes": "light with-border pulsating-onhover show-index show-index-ontop icon-camera responsive",
                         "link": {"href":"https://www.linkedin.com/in/giuseppepizzimenti/", "target":"_blank"},
                         "popup" :  {
                           "classes": "dark",
@@ -376,7 +376,7 @@
                         "id" : "redTag",
                         "top": 36.5693,
                         "left": 52.5,
-                        "classes": "red pulsating",
+                        "classes": "red pulsating show-alphabetical-index",
                         "onclick" : "redTagHelper",
                         "popup" : "Click me!"           
                      },{

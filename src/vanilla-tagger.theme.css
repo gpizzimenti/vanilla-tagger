@@ -44,6 +44,10 @@
   will-change: opacity;
 }
 
+.tag::after {
+  display: none;
+}
+
 .show-index::after,
 .show-caption::after {
   content: attr(data-index);
@@ -63,6 +67,9 @@
 
 .show-index::after {
   content: attr(data-index);
+}
+.show-alphabetical-index::after {
+  content: attr(data-alphabetical-index);
 }
 .show-caption::after {
   content: attr(data-caption);
@@ -210,11 +217,11 @@
 }
 
 .dot.show-index-ontop::after {
-  content: attr(data-index);
   display: block;
   position: absolute;
   top: -4px;
   right: -4px;
+  width: auto;
   line-height: 15px;
   height: 15px;
   padding: 0 5px;
