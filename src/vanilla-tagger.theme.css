@@ -68,8 +68,8 @@
 .show-index::after {
   content: attr(data-index);
 }
-.show-alphabetical-index::after {
-  content: attr(data-alphabetical-index);
+.show-index-alphabetical::after {
+  content: attr(data-index-alphabetical);
 }
 .show-caption::after {
   content: attr(data-caption);
@@ -335,13 +335,11 @@
 /*---------------------------- MEDIA QUERIES (sort of....) ---------------------------- */
 
 .dot.small,
-.dot.small.show-index::after,
 .dot.small[class^="icon-"]::before,
 .dot.small[class*=" icon-"]::before,
 .small-format .dot.responsive,
 .small-format .dot.responsive[class^="icon-"]::before,
-.small-format .dot.responsive[class*=" icon-"]::before,
-.small-format .dot.responsive.show-index::after {
+.small-format .dot.responsive[class*=" icon-"]::before {
   width: var(--dot-size-small);
   height: var(--dot-size-small);
 }
@@ -349,7 +347,6 @@
 .dot.small.show-index::after,
 .small-format .dot.responsive.show-index::after {
   font-size: var(--index-font-size-small);
-  line-height: var(--dot-size-small);
 }
 
 .dot.small.show-index-ontop::after,

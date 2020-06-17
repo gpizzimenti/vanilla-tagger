@@ -423,7 +423,7 @@
     try {
       element.classList.add("tag");
       element.dataset.index = tag.index;
-      element.dataset.alphabeticalIndex = _alphabeticalIndex(tag.index);
+      element.dataset.indexAlphabetical = _alphabeticalIndex(tag.index);
       element.style.top = `${tag.top}%`;
       element.style.left = `${tag.left}%`;
       if (tag.caption) element.dataset.caption = tag.caption;

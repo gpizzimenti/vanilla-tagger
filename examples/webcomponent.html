@@ -26,7 +26,7 @@
               arrow: "center",
               position: "right",
               content:
-                "This tag is responsive, has visible index, an icon ,<br/> a link and is pulsating on hover",
+                "This tag is responsive, has visible index, an icon ,<br/> is pulsating on hover and opens a link in a new window",
             },
             index: 1,
             id: "tag-1",
@@ -35,7 +35,7 @@
             id: "redTag",
             top: 36.5693,
             left: 52.5,
-            classes: "red pulsating",
+            classes: "red pulsating show-index-alphabetical",
             onclick: "redTagHelper",
             popup: "Click me!",
             index: 2,
@@ -254,7 +254,7 @@
           position: "right",
           showOn: "toggle",
           content:
-            "<b>Info on this tag</b><p>This popup has been dinamically added to this tag,<br/> to tell you that this tag is responsive, has no icon,<br/> a visible index and functions attached to the <br/>mouseover / mouseout / click events via event listeners.<br/><br/><i>Also, you can click the tag to toggle this popup,<br/> or click the top-right '&times;' button to close it!</i>",
+            "<b>Info on this tag</b><p>This popup has been dinamically added to this tag,<br/> to tell you that this tag is responsive, has no icon,<br/> has a visible index and functions attached to the <br/>mouseover / mouseout / click events via event listeners.<br/><br/><i>Also, you can click the tag to toggle this popup,<br/> or click the top-right '&times;' button to close it!</i>",
         };
 
         setTimeout(function () {
@@ -370,13 +370,13 @@
                           "classes": "dark",
                           "arrow": "center",
                           "position": "right",
-                          "content": "This tag is responsive, has visible index, an icon ,<br/> a link and is pulsating on hover"           
+                          "content": "This tag is responsive, has visible index, an icon ,<br/> is pulsating on hover and opens a link in a new window"           
                         }
                      },{
                         "id" : "redTag",
                         "top": 36.5693,
                         "left": 52.5,
-                        "classes": "red pulsating show-alphabetical-index",
+                        "classes": "red pulsating show-index-alphabetical",
                         "onclick" : "redTagHelper",
                         "popup" : "Click me!"           
                      },{
