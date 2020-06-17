@@ -10,15 +10,7 @@
   /*-------------------------------- PRIVATE PROPERTIES -------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 
-  let host, //WEBCOMPONENT INSTANCE
-    wrapper,
-    tags = [],
-    resizeObserver,
-    loggedWidth,
-    reservedClasses = ["tag", "popup", "dot", "hotspot", "area"],
-    breakpoints = {
-      small: 640, //default.. you can alter this through the "--format-small-trigger" CSS variable in vanilla-tagger.theme.css
-    };
+  let reservedClasses = ["tag", "popup", "dot", "hotspot", "area"];
 
   /*-----------------------------------------------------------------------------------------*/
 
@@ -52,8 +44,15 @@
 
     .tag {
         position: absolute;
-        display: block;
-    }    
+        display: none;
+        pointer-events: none;
+    }
+    
+    .img-loaded .tag {
+      display: block;
+      pointer-events: inherit;
+  }    
+  
 `;
 
   /*-----------------------------------------------------------------------------------------*/
@@ -77,64 +76,74 @@
 
     constructor() {
       super();
-      (host = this), host.attachShadow({ mode: "open" });
+
+      this.context = {};
+      this.context.tags = [];
+      this.context.wrapper = undefined;
+      this.context.resizeObserver = undefined;
+      this.context.loggedWidth = undefined;
+      this.context.breakpoints = {
+        small: 640, //default.. you can alter this through the "--format-small-trigger" CSS variable in vanilla-tagger.theme.css
+      };
+
+      this.attachShadow({ mode: "open" });
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     get src() {
-      return host.getAttribute("src");
+      return this.getAttribute("src");
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     set src(value) {
-      host.setAttribute("src", value);
+      this.setAttribute("src", value);
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     get tags() {
-      return tags;
+      return this.context.tags;
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     set tags(value) {
-      host.dataset.tags = JSON.stringify(value);
+      this.dataset.tags = JSON.stringify(value);
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     connectedCallback() {
-      _render();
+      _render(this);
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     attributeChangedCallback(name, oldValue, newValue) {
       if (
-        !host ||
-        !wrapper ||
-        host.classList.contains("updating") ||
+        !this ||
+        !this.context.wrapper ||
+        this.classList.contains("updating") ||
         oldValue === newValue
       )
         return false;
 
-      if (name === "src") _loadImage();
-      else if (name === "data-tags") _loadTags();
+      if (name === "src") _loadImage(this);
+      else if (name === "data-tags") _loadTags(this);
     }
 
     /*----------------------------------------------------------------------------------------*/
 
     getTagByIndex(index) {
-      return tags[index - 1];
+      return this.context.tags[index - 1];
     }
 
     /*----------------------------------------------------------------------------------------*/
 
     getTagById(id) {
-      return tags.find((tag) => {
+      return this.context.tags.find((tag) => {
         return tag.id === id;
       });
     }
@@ -142,13 +151,13 @@
     /*----------------------------------------------------------------------------------------*/
 
     highlightTag(options) {
-      _highlightTag(options);
+      _highlightTag(this, options);
     }
 
     /*----------------------------------------------------------------------------------------*/
 
     toggleAllPopups(force) {
-      wrapper.classList.toggle("show-allpopups", force);
+      this.context.wrapper.classList.toggle("show-allpopups", force);
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -170,33 +179,33 @@
   /*------------------------------------- PRIVATE METHODS ------------------------------------*/
   /*------------------------------------------------------------------------------------------*/
 
-  const _render = async function _render() {
+  const _render = async function _render(host) {
     host.classList.add("loading");
 
-    await _applyStyles(); //no FOUC + we need correct dimensions to render popups correctly
+    await _applyStyles(host); //no FOUC + we need correct dimensions to render popups correctly
 
-    wrapper = document.createElement("figure");
-    wrapper.classList.add("wrapper");
-    host.shadowRoot.appendChild(wrapper);
+    host.context.wrapper = document.createElement("figure");
+    host.context.wrapper.classList.add("wrapper");
+    host.shadowRoot.appendChild(host.context.wrapper);
 
-    _setObservers();
+    _setObservers(host);
 
     host.classList.remove("loading");
 
-    _throwEvent("componentCreated");
+    _throwEvent(host, "componentCreated");
 
     //we don't use slotted elements, to achieve maximum incapsulation
-    _loadImage().then(_loadTags);
+    _loadImage(host).then(_loadTags(host));
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _applyStyles = async function _applyStyles() {
+  const _applyStyles = async function _applyStyles(host) {
     let style = document.createElement("style");
     style.appendChild(document.createTextNode(baseStyle));
     host.shadowRoot.appendChild(style);
 
-    const link = await _fetchStyle(themeUrl).catch(() => {
+    const link = await _fetchStyle(themeUrl, host).catch(() => {
       throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
     });
 
@@ -204,14 +213,14 @@
       "--format-small-trigger"
     );
 
-    if (smallBp) breakpoints.small = parseInt(smallBp, 10);
+    if (smallBp) host.context.breakpoints.small = parseInt(smallBp, 10);
 
-    _throwEvent("themeLoaded", themeUrl);
+    _throwEvent(host, "themeLoaded", themeUrl);
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _fetchStyle = async function _fetchStyle(url) {
+  const _fetchStyle = async function _fetchStyle(url, host) {
     return new Promise((resolve, reject) => {
       let link = document.createElement("link");
       link.type = "text/css";
@@ -227,64 +236,67 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _setObservers = function _setObservers() {
-    resizeObserver = new ResizeObserver((entries) => {
+  const _setObservers = function _setObservers(host) {
+    host.context.resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const cr = entry.contentRect,
           currentWidth = parseInt(cr.width, 10);
 
         requestAnimationFrame(function () {
-          _checkFormat(currentWidth);
+          _checkFormat(host, currentWidth);
         });
         requestAnimationFrame(function () {
-          _repositionVisiblePopups();
+          _repositionPopups(host);
         });
       }
     });
 
-    resizeObserver.observe(wrapper);
+    host.context.resizeObserver.observe(host.context.wrapper);
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _checkFormat = function _checkFormat(currentWidth) {
-    if (!loggedWidth && currentWidth <= breakpoints.small) {
-      wrapper.classList.add("small-format");
-      _throwEvent("formatTriggered", {
+  const _checkFormat = function _checkFormat(host, currentWidth) {
+    if (
+      !host.context.loggedWidth &&
+      currentWidth <= host.context.breakpoints.small
+    ) {
+      host.context.wrapper.classList.add("small-format");
+      _throwEvent(host, "formatTriggered", {
         state: true,
         format: "small",
-        breakpoint: breakpoints.small,
+        breakpoint: host.context.breakpoints.small,
       });
     } else {
       if (
-        currentWidth <= breakpoints.small &&
-        loggedWidth > breakpoints.small
+        currentWidth <= host.context.breakpoints.small &&
+        host.context.loggedWidth > host.context.breakpoints.small
       ) {
-        wrapper.classList.add("small-format");
-        _throwEvent("formatTriggered", {
+        host.context.wrapper.classList.add("small-format");
+        _throwEvent(host, "formatTriggered", {
           state: true,
           format: "small",
-          breakpoint: breakpoints.small,
+          breakpoint: host.context.breakpoints.small,
         });
       } else if (
-        currentWidth > breakpoints.small &&
-        loggedWidth <= breakpoints.small
+        currentWidth > host.context.breakpoints.small &&
+        host.context.loggedWidth <= host.context.breakpoints.small
       ) {
-        wrapper.classList.remove("small-format");
-        _throwEvent("formatTriggered", {
+        host.context.wrapper.classList.remove("small-format");
+        _throwEvent(host, "formatTriggered", {
           state: false,
           format: "small",
-          breakpoint: breakpoints.small,
+          breakpoint: host.context.breakpoints.small,
         });
       }
     }
 
-    loggedWidth = currentWidth;
+    host.context.loggedWidth = currentWidth;
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _throwEvent = function _throwEvent(name, data) {
+  const _throwEvent = function _throwEvent(host, name, data) {
     if (!host) return false;
 
     let evt = new CustomEvent("VanillaTagger:" + name, {
@@ -297,37 +309,41 @@
 
   /*----------------------------------------------------------------------------------------*/
 
-  const _loadImage = async function _loadImage() {
+  const _loadImage = async function _loadImage(host) {
     if (!host.getAttribute("src")) {
       console.warn("No 'src' parameter set");
       return false;
     }
 
     host.classList.add("updating");
-    wrapper.classList.add("img-loading");
+    host.context.wrapper.classList.add("img-loading");
 
     const imgObj = await _fetchImage(host.getAttribute("src"))
       .catch(() => {
-        wrapper.classList.add("img-missing");
+        host.context.wrapper.classList.add("img-missing");
         throw new VanillaTaggerError(
           `Can't load image => ${host.getAttribute("src")}`
         );
       })
       .finally(() => {
-        wrapper.classList.remove("img-loading");
+        host.context.wrapper.classList.remove("img-loading");
       });
 
-    let img = wrapper.querySelector("img") || document.createElement("img");
+    let img =
+      host.context.wrapper.querySelector("img.img-tagged") ||
+      document.createElement("img");
+
     img.setAttribute("src", imgObj.src);
+    img.classList.add("img-tagged");
 
-    if (!wrapper.classList.contains("img-loaded"))
+    if (!host.context.wrapper.classList.contains("img-loaded"))
       //didn't have an image loaded before
-      wrapper.appendChild(img);
+      host.context.wrapper.appendChild(img);
 
-    wrapper.classList.add("img-loaded");
+    host.context.wrapper.classList.add("img-loaded");
     host.classList.remove("updating");
 
-    _throwEvent("imgLoaded", {
+    _throwEvent(host, "imgLoaded", {
       src: imgObj.src,
       width: imgObj.width,
       height: imgObj.height,
@@ -347,28 +363,28 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _loadTags = function _loadTags() {
+  const _loadTags = function _loadTags(host) {
     if (!host.dataset.tags) {
       console.warn("No attribute 'data-tags' found");
       return false;
     }
 
-    if (tags.length > 0) _resetTags();
+    if (host.context.tags.length > 0) _resetTags(host);
 
     try {
       host.classList.add("updating");
 
-      wrapper.classList.remove("dim-alltags");
-      wrapper.classList.remove("show-allpopups");
+      host.context.wrapper.classList.remove("dim-alltags");
+      host.context.wrapper.classList.remove("show-allpopups");
 
-      tags = JSON.parse(host.dataset.tags);
+      host.context.tags = JSON.parse(host.dataset.tags);
 
-      tags.forEach(function (tag, index) {
+      host.context.tags.forEach(function (tag, index) {
         tag.index = index + 1;
-        _addTag(tag);
+        _addTag(host, tag);
       });
 
-      _throwEvent("tagsLoaded", tags);
+      _throwEvent(host, "tagsLoaded", host.context.tags);
     } catch (err) {
       throw new VanillaTaggerError(`Error parsing tags data => ${err}`);
     } finally {
@@ -378,17 +394,17 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _resetTags = function _resetTags() {
+  const _resetTags = function _resetTags(host) {
     try {
-      if (!wrapper) return true;
+      if (!host.context.wrapper) return true;
 
-      let allElements = wrapper.querySelectorAll(".tag, .popup");
+      let allElements = host.context.wrapper.querySelectorAll(".tag, .popup");
 
       allElements.forEach(function (el) {
-        wrapper.removeChild(el);
+        host.context.wrapper.removeChild(el);
       });
 
-      tags = [];
+      host.context.tags = [];
     } catch (err) {
       throw new VanillaTaggerError(`Error resetting tags => ${err}`);
     }
@@ -396,21 +412,21 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _addTag = function _addTag(tag) {
+  const _addTag = function _addTag(host, tag) {
     try {
       let element = document.createElement("a");
 
-      wrapper.appendChild(element);
+      host.context.wrapper.appendChild(element);
 
-      _attachProperties(element, tag);
+      _attachProperties(host, element, tag);
 
-      _attachMethods(tag);
+      _attachMethods(host, tag);
 
-      _attachPopup(element, tag);
+      _attachPopup(host, element, tag);
 
-      _attachEvents("click mouseover mouseout", element, tag);
+      _attachEvents("click mouseover mouseout", host, element, tag);
 
-      _throwEvent("tagAdded", tag);
+      _throwEvent(host, "tagAdded", tag);
     } catch (err) {
       console.warn("Can't render tag:" + JSON.stringify(tag));
       throw new VanillaTaggerError(`Error rendering tag => ${err}`);
@@ -419,11 +435,12 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _attachProperties = function _attachProperties(element, tag) {
+  const _attachProperties = function _attachProperties(host, element, tag) {
     try {
       element.classList.add("tag");
       element.dataset.index = tag.index;
-      element.dataset.indexAlphabetical = _alphabeticalIndex(tag.index);
+      tag.indexAlphabetical = _alphabeticalIndex(tag.index);
+      element.dataset.indexAlphabetical = tag.indexAlphabetical;
       element.style.top = `${tag.top}%`;
       element.style.left = `${tag.left}%`;
       if (tag.caption) element.dataset.caption = tag.caption;
@@ -470,53 +487,40 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _attachMethods = function _attachMethods(tag) {
+  const _attachMethods = function _attachMethods(host, tag) {
     try {
-      tag.addClass = function (className) {
-        if (tag.classes.indexOf(className) < 0)
-          tag.classes = tag.classes + " " + className;
-        return _addClass(_getElement(tag), className, tag);
+      tag.addClass = function (classNames) {
+        return _addClass(_getElement(host, tag), classNames, tag);
       };
-      tag.removeClass = function (className) {
-        tag.classes = tag.classes
-          .replace(className, "")
-          .replace("  ", " ")
-          .trim();
-        return _removeClass(_getElement(tag), className, tag);
+      tag.removeClass = function (classNames) {
+        return _removeClass(_getElement(host, tag), classNames, tag);
       };
       tag.toggleClass = function (className) {
         if (tag.classes.indexOf(className) > -1) tag.removeClass(className);
         else tag.addClass(className);
       };
       tag.hasClass = function (className) {
-        return _hasClass(_getElement(tag), className);
+        return _hasClass(_getElement(host, tag), className);
       };
-
       tag.addClassToPopup = function (className) {
-        if (tag.popup.classes.indexOf(className) < 0)
-          tag.popup.classes = tag.popup.classes + " " + className;
-        return _addClass(_getPopupElement(tag), className, tag);
+        return _addClass(_getPopupElement(host, tag), className, tag.popup);
       };
       tag.removeClassFromPopup = function (className) {
-        tag.popup.classes = tag.popup.classes
-          .replace(className, "")
-          .replace("  ", " ")
-          .trim();
-        return _removeClass(_getPopupElement(tag), className, tag);
+        return _removeClass(_getPopupElement(host, tag), className, tag.popup);
       };
-      tag.toggleClassOfPopup = function (className, force) {
+      tag.toggleClassOfPopup = function (className) {
         if (tag.popup.classes.indexOf(className) > -1)
           tag.popup.removeClass(className);
         else tag.popup.addClass(className);
       };
       tag.popupHasClass = function (className) {
-        return _hasClass(_getPopupElement(tag), className);
+        return _hasClass(_getPopupElement(host, tag), className);
       };
 
       tag.setPopup = function (popup) {
         tag.popup = popup;
-        wrapper.removeChild(_getPopupElement(tag));
-        _attachPopup(_getElement(tag), tag);
+        host.context.wrapper.removeChild(_getPopupElement(host, tag));
+        _attachPopup(host, _getElement(host, tag), tag);
       };
     } catch (err) {
       console.warn("Can't attach methods to tag:" + JSON.stringify(tag));
@@ -526,26 +530,43 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _getElement = function _getElement(tag) {
-    return wrapper.querySelector(".tag[data-index='" + tag.index + "']");
+  const _getElement = function _getElement(host, tag) {
+    return host.context.wrapper.querySelector(
+      ".tag[data-index='" + tag.index + "']"
+    );
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _getPopupElement = function _getPopupElement(tag) {
-    return wrapper.querySelector(".popup[data-index='" + tag.index + "']");
+  const _getPopupElement = function _getPopupElement(host, tag) {
+    return host.context.wrapper.querySelector(
+      ".popup[data-index='" + tag.index + "']"
+    );
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _addClass = function _addClass(element, className) {
-    element.classList.add(className);
+  const _addClass = function _addClass(element, classNames, data) {
+    classNames.split(" ").forEach(function (className) {
+      if (data && data.classes.indexOf(className) < 0)
+        data.classes = data.classes + " " + className;
+
+      element.classList.add(className);
+    });
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _removeClass = function _removeClass(element, className) {
-    element.classList.remove(className);
+  const _removeClass = function _removeClass(element, classNames, data) {
+    classNames.split(" ").forEach(function (className) {
+      if (data && data.classes)
+        data.classes = data.classes
+          .replace(className, "")
+          .replace("  ", " ")
+          .trim();
+
+      element.classList.remove(className);
+    });
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -556,7 +577,7 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _attachPopup = function _attachPopup(element, tag) {
+  const _attachPopup = function _attachPopup(host, element, tag) {
     if (!tag.popup) return false;
 
     try {
@@ -589,18 +610,17 @@
         closeButton.classList.add("close");
 
         closeButton.addEventListener("click", function (e) {
-          tag.removeClass("show-popup");
-          tag.removeClass("toggled");
-          _throwEvent("popupClosedByClick", tag);
+          tag.removeClass("show-popup toggled");
+          _throwEvent(host, "popupClosedByClick", tag);
         });
 
         popup.appendChild(closeButton);
       }
 
-      wrapper.insertBefore(popup, element.nextSibling); //insertAfter
+      host.context.wrapper.insertBefore(popup, element.nextSibling); //insertAfter
 
       requestAnimationFrame(function () {
-        _repositionPopup(tag);
+        _repositionPopup(host, tag);
       });
     } catch (err) {
       console.warn("Can't attach popup to tag:" + JSON.stringify(tag));
@@ -610,12 +630,12 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _repositionPopup = function _repositionPopup(tag) {
+  const _repositionPopup = function _repositionPopup(host, tag) {
     try {
       if (!tag || !tag.popup) return false;
 
-      let element = _getElement(tag),
-        popup = _getPopupElement(tag);
+      let element = _getElement(host, tag),
+        popup = _getPopupElement(host, tag);
 
       if (!element || !popup) return false;
 
@@ -674,66 +694,73 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _repositionVisiblePopups = function _repositionPopups() {
-    let popups = wrapper.querySelectorAll(".popup"),
-      visibilePopus = [...popups]
-        .filter(function (popup) {
-          return (
-            parseInt(getComputedStyle(popup).getPropertyValue("opacity"), 10) >
-            0
-          );
-        })
-        .forEach(function (popup) {
-          requestAnimationFrame(function () {
-            _repositionPopup(tags[popup.dataset.index]);
-          });
+  const _repositionPopups = function _repositionPopups(host) {
+    let popups = host.context.wrapper
+      .querySelectorAll(".popup")
+      .forEach(function (popup) {
+        requestAnimationFrame(function () {
+          _repositionPopup(host, host.context.tags[popup.dataset.index]);
         });
+      });
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _highlightTag = function _highlightTag(options) {
+  const _highlightTag = function _highlightTag(host, options) {
     let hightlightedTags = [];
 
     if (!options || !options.tag || !options.state || options.exclusive) {
-      hightlightedTags = tags.filter(function (tag) {
+      hightlightedTags = host.context.tags.filter(function (tag) {
         return tag.hasClass("highlight");
       });
     }
 
     if (!options || !options.tag) {
       hightlightedTags.forEach(function (tag) {
-        tag.removeClass("highlight");
-        tag.removeClass("show-popup");
+        tag.removeClass(
+          "highlight" +
+            (options && options.highlightedClasses
+              ? " " + options.highlightedClasses
+              : "")
+        );
       });
 
-      wrapper.classList.remove("dim-alltags");
+      host.context.wrapper.classList.remove("dim-alltags");
       return false;
     }
 
     if (options.state) {
-      wrapper.classList.add("dim-alltags");
+      host.context.wrapper.classList.add("dim-alltags");
 
       if (options.exclusive) {
         hightlightedTags.forEach(function (tag) {
-          tag.removeClass("highlight");
-          tag.removeClass("show-popup");
+          tag.removeClass(
+            "highlight" +
+              (options.highlightedClasses
+                ? " " + options.highlightedClasses
+                : "")
+          );
         });
       }
 
-      options.tag.addClass("highlight");
-      if (options.showPopup) options.tag.addClass("show-popup");
+      options.tag.addClass(
+        "highlight" +
+          (options.highlightedClasses ? " " + options.highlightedClasses : "")
+      );
     } else {
-      options.tag.removeClass("highlight");
-      options.tag.removeClass("show-popup");
+      options.tag.removeClass(
+        "highlight" +
+          (options.highlightedClasses ? " " + options.highlightedClasses : "")
+      );
 
-      if (hightlightedTags.length < 2) wrapper.classList.remove("dim-alltags");
+      if (hightlightedTags.length < 2)
+        host.context.wrapper.classList.remove("dim-alltags");
     }
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _attachEvents = function _attachEvents(eventNames, element, tag) {
+  const _attachEvents = function _attachEvents(eventNames, host, element, tag) {
     try {
       if (eventNames) {
         eventNames.split(" ").forEach(function (evt, index) {
@@ -742,11 +769,11 @@
               "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
           element.addEventListener(eventName, function (e) {
-            _throwEvent(eventNameToThrow, tag);
+            _throwEvent(host, eventNameToThrow, tag);
 
             if (eventName === "click" || eventName === "mouseover") {
               requestAnimationFrame(function () {
-                _repositionPopup(tag);
+                _repositionPopup(host, tag);
               });
             }
 
@@ -771,6 +798,9 @@
 
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
+
+  window.VanillaTagger = VanillaTagger;
+
   customElements.define("vanilla-tagger", VanillaTagger);
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/

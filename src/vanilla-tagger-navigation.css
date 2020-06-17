@@ -1,0 +1,71 @@
+body {
+  font-family: sans-serif;
+}
+
+@media screen and (min-width: 640px) {
+  main {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  #imgContainer {
+    flex: 1;
+    max-width: 1000px;
+  }
+
+  #navContainer {
+    width: 20%;
+    padding: 0 15px;
+  }
+
+  #v-tagger {
+    width: 100%;
+  }
+}
+
+.vanilla-tagger-navigation {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.vanilla-tagger-navigation li {
+  display: flex;
+  padding: 5px;
+  cursor: pointer;
+  list-style: none;
+  vertical-align: middle;
+  line-height: 30px;
+}
+
+.vanilla-tagger-navigation li.active {
+  font-weight: bold;
+}
+
+.vanilla-tagger-navigation li::before {
+  content: attr(data-index);
+
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+  border: solid 2px #ccc;
+  border-radius: 200px;
+  font-size: 14px;
+  line-height: 16px;
+  padding: 5px;
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  min-height: 15px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.vanilla-tagger-navigation li.active::before {
+  border: solid 2px #000;
+}
+
+.index-alphabetical .vanilla-tagger-navigation li::before {
+  content: attr(data-index-alphabetical);
+}

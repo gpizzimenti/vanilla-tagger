@@ -26,7 +26,7 @@
               arrow: "center",
               position: "right",
               content:
-                "This tag is responsive, has visible index, an icon ,<br/> is pulsating on hover and opens a link in a new window",
+                "This tag is responsive, has visible index, an icon ,<br> is pulsating on hover and opens a link in a new window",
             },
             index: 1,
             id: "tag-1",
@@ -72,7 +72,7 @@
               position: "top",
               showOn: "hover",
               content:
-                '<b><i>Look! A dolphin!</i></b><br/><br/><img width="100" height="90" src="https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=100&height=90&q=80"/>',
+                '<b><i>Look! A dolphin!</i></b><br><br><img width="100" height="90" src="https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=100&height=90&q=80"/>',
             },
             index: 5,
             id: "tag-5",
@@ -99,7 +99,7 @@
               arrow: "top",
               position: "left",
               content:
-                "A<br/>very,<br/>very,<br/>very,<br/>very,<br/>very,<br/>tall<br/>skyscraper<br/>(but, at last<br/>this popup<br/>is aligned<br/>on top)",
+                "A<br>very,<br>very,<br>very,<br>very,<br>very,<br>tall<br>skyscraper<br>(but, at last<br>this popup<br>is aligned<br>on top)",
             },
             index: 7,
             id: "tag-7",
@@ -233,13 +233,11 @@
         tag.addClass("show-index");
 
         if (decision && action === "shape") {
-          tag.removeClass("icon-marker");
-          tag.removeClass("show-index-ontop");
+          tag.removeClass("icon-marker show-index-ontop");
           tag.addClass("shape-marker-full");
         } else if (decision && action === "icon") {
           tag.removeClass("shape-marker-full");
-          tag.addClass("icon-marker");
-          tag.addClass("show-index-ontop");
+          tag.addClass("icon-marker show-index-ontop");
         }
       };
 
@@ -254,7 +252,7 @@
           position: "right",
           showOn: "toggle",
           content:
-            "<b>Info on this tag</b><p>This popup has been dinamically added to this tag,<br/> to tell you that this tag is responsive, has no icon,<br/> has a visible index and functions attached to the <br/>mouseover / mouseout / click events via event listeners.<br/><br/><i>Also, you can click the tag to toggle this popup,<br/> or click the top-right '&times;' button to close it!</i>",
+            "<b>Info on this tag</b><p>This popup has been dinamically added to this tag,<br> to tell you that this tag is responsive, has no icon,<br> has a visible index and functions attached to the <br>mouseover / mouseout / click events via event listeners.<br><br><i>Also, you can click the tag to toggle this popup,<br> or click the top-right '&times;' button to close it!</i>",
         };
 
         setTimeout(function () {
@@ -305,7 +303,7 @@
             tag: tag,
             state: true,
             exclusive: true,
-            showPopup: true,
+            highlightedClasses: "toggled show-popup pulsating",
           };
 
         tagger.highlightTag(options);
@@ -370,7 +368,7 @@
                           "classes": "dark",
                           "arrow": "center",
                           "position": "right",
-                          "content": "This tag is responsive, has visible index, an icon ,<br/> is pulsating on hover and opens a link in a new window"           
+                          "content": "This tag is responsive, has visible index, an icon ,<br> is pulsating on hover and opens a link in a new window"           
                         }
                      },{
                         "id" : "redTag",
@@ -404,7 +402,7 @@
                           "arrow": "center",
                           "position": "top",
                           "showOn": "hover",
-                          "content": "<b><i>Look! A dolphin!</i></b><br/><br/><img width=\"100\" height=\"90\" src=\"https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=100&height=90&q=80\"/>"
+                          "content": "<b><i>Look! A dolphin!</i></b><br><br><img width=\"100\" height=\"90\" src=\"https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=100&height=90&q=80\"/>"
                         }   
                      },{
                         "top": 17.2,
@@ -422,7 +420,7 @@
                         "classes": "xdark",
                         "arrow": "top",
                         "position": "left",
-                        "content": "A<br/>very,<br/>very,<br/>very,<br/>very,<br/>very,<br/>tall<br/>skyscraper<br/>(but, at last<br/>this popup<br/>is aligned<br/>on top)"
+                        "content": "A<br>very,<br>very,<br>very,<br>very,<br>very,<br>tall<br>skyscraper<br>(but, at last<br>this popup<br>is aligned<br>on top)"
                        }
                       },{
                         "top": 50.1937,

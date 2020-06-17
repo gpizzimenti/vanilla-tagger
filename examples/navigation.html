@@ -7,31 +7,9 @@
     <title>Vanilla Tagger - Navigation</title>
 
     <script src="../src/vanilla-tagger.webc.js" defer></script>
+    <script src="../src/vanilla-tagger-navigation.webc.js" defer></script>
 
-    <style>
-      body {
-        font-family: sans-serif;
-      }
-
-      main {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-      }
-
-      #imgContainer {
-        flex: 1;
-      }
-
-      #navContainer {
-        width: 20%;
-        padding: 0 15px;
-      }
-
-      #v-tagger {
-        width: 100%;
-      }
-    </style>
+    <link href="../src/vanilla-tagger-navigation.css" rel="stylesheet" />
   </head>
   <body>
     <h1>
@@ -39,64 +17,70 @@
     </h1>
     <main>
       <section id="imgContainer">
-        <vanilla-tagger
+        <vanilla-tagger-navigation
           id="v-tagger"
           src="https://images.unsplash.com/photo-1519412711294-ea7265523d5a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
-          data-navigation="#navContainer"
+          placeholder="#navContainer"
+          data-trigger="click"
           data-tags='[{
                         "top": 21,
                         "left": 16,
                         "classes": "red responsive with-border pulsating-onhover show-index show-index-alphabetical show-index-ontop icon-camera",
+                        "caption": "Kilkenny",
                         "popup" :  {
                             "classes": "light closeable",
                             "arrow": "center",
                             "position": "bottom",
                             "showOn": "toggle",                            
-                            "content": "<b>Kilkenny</b><br/><br/><img width=\"220\" src=\"https://d5qsyj6vaeh11.cloudfront.net/images/destinations/kilkenny-city/kilkenny-river.jpg\"/><br/><br/><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://www.ireland.com/it-it/destinazioni/republic-of-ireland/kilkenny/kilkenny-city/\" target=\"blank\"/>Open website&nbsp;&#x2197;</a>"           
+                            "content": "<b>Kilkenny</b><br><br><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/2_Doors_in_Kilkenny_IMG_4744.JPG/1200px-2_Doors_in_Kilkenny_IMG_4744.JPG\"/><br><br><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://www.ireland.com/it-it/destinazioni/republic-of-ireland/kilkenny/kilkenny-city/\" target=\"blank\"/>Open website&nbsp;&#x2197;</a>"           
                         }
                     },{
                         "top": 28.65,
                         "left": 51.3,
                         "classes": "red responsive with-border pulsating-onhover show-index show-index-alphabetical show-index-ontop icon-camera",
+                        "caption": "Butler House Gardens",
                         "popup" :  {
                             "classes": "light closeable",
                             "arrow": "center",
                             "position": "bottom",
                             "showOn": "toggle",                            
-                            "content": "<b>Butler House Gardens</b><br/><br/><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/2/29/Butler_House_gardens%2C_Kilkenny_-_geograph.org.uk_-_1537832.jpg\"/><br/><br/><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://www.lonelyplanet.com/ireland/county-kilkenny/kilkenny-city/attractions/butler-house-gardens/a/poi-sig/1353696/359713\" target=\"blank\"/>Open this place on Lonely Planet&nbsp;&#x2197;</a>"           
+                            "content": "<b>Butler House Gardens</b><br><br><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/2/29/Butler_House_gardens%2C_Kilkenny_-_geograph.org.uk_-_1537832.jpg\"/><br><br><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://www.lonelyplanet.com/ireland/county-kilkenny/kilkenny-city/attractions/butler-house-gardens/a/poi-sig/1353696/359713\" target=\"blank\"/>Open this place on Lonely Planet&nbsp;&#x2197;</a>"           
                         }
                     },{
                         "top": 67.45,
                         "left": 50,
                         "classes": "red responsive with-border pulsating-onhover show-index show-index-alphabetical show-index-ontop icon-camera",
+                        "caption": "Kilkenny Castle",
                         "popup" :  {
                             "classes": "light closeable",
                             "arrow": "center",
                             "position": "top",
                             "showOn": "toggle",                            
-                            "content": "<b>Kilkenny Castle</b><br/><br/><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Kilkenny_Castle_%288230835998%29.jpg/1322px-Kilkenny_Castle_%288230835998%29.jpg\"/><br/><br/><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://en.wikipedia.org/wiki/Kilkenny_Castle\" target=\"blank\"/>Open this place on Wikipedia&nbsp;&#x2197;</a>"           
+                            "content": "<b>Kilkenny Castle</b><br><br><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Kilkenny_Castle_%288230835998%29.jpg/1322px-Kilkenny_Castle_%288230835998%29.jpg\"/><br><br><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://en.wikipedia.org/wiki/Kilkenny_Castle\" target=\"blank\"/>Open this place on Wikipedia&nbsp;&#x2197;</a>"           
                         }
                     },{
                         "top": 50,
                         "left": 66.5,
                         "classes": "red responsive with-border pulsating-onhover show-index show-index-alphabetical show-index-ontop icon-camera",
+                        "caption": "River Nore",                        
                         "popup" :  {
                             "classes": "light closeable",
                             "arrow": "center",
                             "position": "top",
                             "showOn": "toggle",                            
-                            "content": "<b>River Nore</b><br/><br/><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Kilkenny_river.JPG/375px-Kilkenny_river.JPG\"/><br/><br/><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://en.wikipedia.org/wiki/River_Nore\" target=\"blank\"/>Open this place on Wikipedia&nbsp;&#x2197;</a>"           
+                            "content": "<b>River Nore</b><br><br><img width=\"220\" src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Kilkenny_river.JPG/375px-Kilkenny_river.JPG\"/><br><br><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://en.wikipedia.org/wiki/River_Nore\" target=\"blank\"/>Open this place on Wikipedia&nbsp;&#x2197;</a>"           
                         }
                     },{
                         "top": 30.5,
                         "left": 81,
                         "classes": "red responsive with-border pulsating-onhover show-index show-index-alphabetical show-index-ontop icon-camera",
+                        "caption": "Kilkenny River Court",                        
                         "popup" :  {
                             "classes": "light closeable",
                             "arrow": "center",
                             "position": "bottom",
                             "showOn": "toggle",                            
-                            "content": "<b>Kilkenny River Court</b><br/><br/><img width=\"220\" src=\"https://www.rivercourthotel.com/cmsGallery/photo/5317/resized/800x800/classic_double_room_classic_single_room.jpg\"/><br/><br/><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://www.rivercourthotel.com\" target=\"blank\"/>Open website&nbsp;&#x2197;</a>"           
+                            "content": "<b>Kilkenny River Court</b><br><br><img width=\"220\" src=\"https://www.rivercourthotel.com/cmsGallery/photo/5317/resized/800x800/classic_double_room_classic_single_room.jpg\"/><br><br><a style=\"color: #9e9e9e; font-weight: bold; text-decoration: none;\" href=\"https://www.rivercourthotel.com\" target=\"blank\"/>Open website&nbsp;&#x2197;</a>"           
                         }
                     }]'
         >
@@ -104,13 +88,12 @@
           <a href="https://browsehappy.com/" target="_blank"
             >Please , update your browser</a
           >
-        </vanilla-tagger>
+        </vanilla-tagger-navigation>
       </section>
 
-      <aside id="navContainer">
-        navigation
-      </aside>
+      <aside id="navContainer" class="index-alphabetical"></aside>
     </main>
+
     <br />
     <br />
   </body>
