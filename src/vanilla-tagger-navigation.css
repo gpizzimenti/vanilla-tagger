@@ -12,11 +12,13 @@ body {
   #imgContainer {
     flex: 1;
     max-width: 1000px;
+    z-index: 2;
   }
 
   #navContainer {
     width: 20%;
     padding: 0 15px;
+    z-index: 1;
   }
 
   #v-tagger {
