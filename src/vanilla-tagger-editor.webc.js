@@ -2,6 +2,17 @@
 
 (function () {
   /*-----------------------------------------------------------------------------------------*/
+
+  const editorTemplate = `
+    <form class="vanilla-tagger-editor">
+     <input type="radio" name="tagType" id="tagTypeDot" value="dot" checked>
+     <label for="tagTypeDot">Dot</label>     
+     <input type="radio" name="tagType" id="tagTypeHotspot" value="hotspot" disabled>
+     <label for="tagTypeHotspot">Hotspot</label>
+    </form>
+  `;
+
+  /*-----------------------------------------------------------------------------------------*/
   /*---------------------------------- WEBCOMPONENT CLASS -----------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 
@@ -45,13 +56,13 @@
   const _renderEditor = function _renderEditor(host) {
     if (!host.placeholder) return false;
     let containers = document.querySelectorAll(host.placeholder),
-      editor = document.createElement("ol");
+      editorTmpl = document.createElement("template");
 
-    editor.classList.add("vanilla-tagger-editor");
+    editorTmpl.innerHTML = editorTemplate;
 
     containers.forEach(function (container) {
       container.innerHTML = "";
-      container.appendChild(editor);
+      container.appendChild(editorTmpl.content.cloneNode(true));
     });
   };
 
