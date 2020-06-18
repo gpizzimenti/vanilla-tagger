@@ -72,21 +72,19 @@
 
     navigation.classList.add("vanilla-tagger-navigation");
 
+    host.context.navigation = navigation;
+
     host.context.tags.forEach(function (tag) {
       _addNav(host, tag, navigation);
     });
 
     host.addEventListener("click", function (event) {
-      let options = {
-        state: false,
-        exclusive: true,
-        highlightedClasses: "toggled show-popup pulsating",
-      };
+      _removeHighlight(host);
+    });
 
-      host.highlightTag(options);
-
-      let activeNav = navigation.querySelector(".active");
-      if (activeNav) activeNav.classList.remove("active");
+    host.addEventListener("VanillaTagger:tagClick", function (event) {
+      let tag = event.detail;
+      _toggleTag(host, tag);
     });
 
     containers.forEach(function (container) {
@@ -102,35 +100,58 @@
 
     nav.dataset.index = tag.index;
     nav.dataset.indexAlphabetical = tag.indexAlphabetical;
-
     nav.innerHTML = tag.caption;
 
-    nav.addEventListener(host.dataset.trigger, function (event) {
-      let options = {
+    nav.addEventListener("click", function (event) {
+      _toggleTag(host, tag);
+    });
+
+    //nav.addEventListener(host.dataset.trigger, function (event) { //alternative to tagClick tio highlight
+    navigation.appendChild(nav);
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _toggleTag = function _toggleTag(host, tag) {
+    let nav = host.context.navigation.querySelector(
+      "[data-index='" + tag.index + "']"
+    );
+
+    if (nav.classList.contains("active")) {
+      _removeHighlight(host);
+      return false;
+    }
+
+    let options = {
         state: false,
         exclusive: true,
         highlightedClasses: "toggled show-popup pulsating",
-      };
+      },
+      activeNav = host.context.navigation.querySelector(".active");
 
-      if (nav.classList.contains("active")) {
-        nav.classList.remove("active");
-        host.highlightTag(options);
-        return false;
-      }
+    if (activeNav) activeNav.classList.remove("active");
 
-      let activeNav = navigation.querySelector(".active");
+    nav.classList.add("active");
 
-      if (activeNav) activeNav.classList.remove("active");
+    options.tag = tag;
+    options.state = true;
 
-      nav.classList.add("active");
+    host.highlightTag(options);
+  };
 
-      options.tag = tag;
-      options.state = true;
+  /*-----------------------------------------------------------------------------------------*/
 
-      host.highlightTag(options);
-    });
+  const _removeHighlight = function _removeHighlight(host) {
+    let options = {
+      state: false,
+      exclusive: true,
+      highlightedClasses: "toggled show-popup pulsating",
+    };
 
-    navigation.appendChild(nav);
+    let activeNav = host.context.navigation.querySelector(".active");
+    if (activeNav) activeNav.classList.remove("active");
+
+    host.highlightTag(options);
   };
 
   /*-----------------------------------------------------------------------------------------*/
