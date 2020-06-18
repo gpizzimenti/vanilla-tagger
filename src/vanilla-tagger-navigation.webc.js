@@ -57,7 +57,7 @@
   /*------------------------------------- PRIVATE METHODS ------------------------------------*/
   /*------------------------------------------------------------------------------------------*/
 
-  const _renderNavigation = function _render(host) {
+  const _renderNavigation = function _renderNavigation(host) {
     if (!host.placeholder) return false;
     let containers = document.querySelectorAll(host.placeholder),
       navigation = document.createElement("ol");
@@ -97,36 +97,30 @@
 
     nav.innerHTML = tag.caption;
 
-    nav.addEventListener(
-      host.dataset.trigger,
-      function (event) {
-        event.stopImmediatePropagation();
+    nav.addEventListener(host.dataset.trigger, function (event) {
+      let options = {
+        state: false,
+        exclusive: true,
+        highlightedClasses: "toggled show-popup pulsating",
+      };
 
-        let options = {
-          state: false,
-          exclusive: true,
-          highlightedClasses: "toggled show-popup pulsating",
-        };
-
-        if (nav.classList.contains("active")) {
-          nav.classList.remove("active");
-          host.highlightTag(options);
-          return false;
-        }
-
-        let activeNav = navigation.querySelector(".active");
-
-        if (activeNav) activeNav.classList.remove("active");
-
-        nav.classList.add("active");
-
-        options.tag = tag;
-        options.state = true;
-
+      if (nav.classList.contains("active")) {
+        nav.classList.remove("active");
         host.highlightTag(options);
-      },
-      false
-    );
+        return false;
+      }
+
+      let activeNav = navigation.querySelector(".active");
+
+      if (activeNav) activeNav.classList.remove("active");
+
+      nav.classList.add("active");
+
+      options.tag = tag;
+      options.state = true;
+
+      host.highlightTag(options);
+    });
 
     navigation.appendChild(nav);
   };
