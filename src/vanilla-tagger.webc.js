@@ -160,6 +160,18 @@
     }
 
     /*----------------------------------------------------------------------------------------*/
+
+    loadImage() {
+      _loadImage(this);
+    }
+
+    /*----------------------------------------------------------------------------------------*/
+
+    loadTags() {
+      _loadTags(this);
+    }
+
+    /*----------------------------------------------------------------------------------------*/
   } //END WEBCOMPONENT CLASS
 
   /*------------------------------------------------------------------------------------------*/
@@ -226,6 +238,9 @@
       link.rel = "stylesheet";
       link.onload = () => {
         resolve(link);
+      };
+      link.onerror = () => {
+        reject(link);
       };
       link.href = url;
 
@@ -778,6 +793,8 @@
               "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
           element.addEventListener(eventName, function (e) {
+            e.stopPropagation();
+
             _throwEvent(host, eventNameToThrow, tag);
 
             if (eventName === "click" || eventName === "mouseover") {

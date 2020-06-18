@@ -22,17 +22,17 @@ main {
   width: 100%;
 }
 
-.vanilla-tagger-editor {
+.vanilla-tagger-toolbar {
   padding: 0;
   margin: 0;
 }
 
-.vanilla-tagger-editor input[type="radio"] {
+.vanilla-tagger-toolbar input[type="radio"] {
   display: none;
   margin: 10px;
 }
 
-.vanilla-tagger-editor input[type="radio"] + label {
+.vanilla-tagger-toolbar input[type="radio"] + label {
   display: inline-block;
   margin: -2px;
   padding: 4px 12px;
@@ -41,12 +41,42 @@ main {
   cursor: pointer;
 }
 
-.vanilla-tagger-editor input[type="radio"]:checked + label {
+.vanilla-tagger-toolbar input[type="radio"]:checked + label {
   background-image: none;
   background-color: #d0d0d0;
 }
 
-.vanilla-tagger-editor input[type="radio"]:disabled + label {
+.vanilla-tagger-toolbar input[type="radio"]:disabled + label {
   opacity: 0.5;
   pointer-events: none;
+}
+
+.vanilla-tagger-dialog {
+  border-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  border-width: 2px;
+  background-color: #fff;
+  color: #333;
+  box-shadow: 1px 4px 4px 1px rgba(0, 0, 0, 0.35);
+  padding: 0px;
+}
+
+.vanilla-tagger-dialog::backdrop {
+  background-color: rgba(75, 75, 75, 0.2);
+  backdrop-filter: blur(2px);
+}
+
+.vanilla-tagger-dialog header {
+  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.vanilla-tagger-dialog main {
+  padding: 5px 10px;
+}
+
+.vanilla-tagger-dialog footer {
+  padding: 10px;
+  border-top: solid 1px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }

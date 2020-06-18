@@ -7,7 +7,7 @@
 
   class VanillaTaggerNavigation extends VanillaTagger {
     static get observedAttributes() {
-      return ["placeholder", "data-trigger"];
+      return ["src", "placeholder", "data-tags", "data-trigger"];
     }
 
     /*--------------------------------- CLASS METHODS ---------------------------------------*/
@@ -45,9 +45,17 @@
     /*---------------------------------------------------------------------------------------*/
 
     attributeChangedCallback(name, oldValue, newValue) {
-      if (oldValue === newValue) return false;
+      if (
+        !this ||
+        !this.context.wrapper ||
+        this.classList.contains("updating") ||
+        oldValue === newValue
+      )
+        return false;
 
-      _renderNavigation(this);
+      if (name === "src") this.loadImage();
+      else if (name === "data-tags") this.loadTags();
+      else _renderNavigation(this);
     }
 
     /*----------------------------------------------------------------------------------------*/
