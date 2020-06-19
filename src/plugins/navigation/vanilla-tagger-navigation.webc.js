@@ -68,15 +68,24 @@
   const _renderNavigation = function _renderNavigation(host) {
     if (!host.placeholder) return false;
     let containers = document.querySelectorAll(host.placeholder),
-      navigation = document.createElement("ol");
+      navigation = document.createElement("ol"),
+      tagsModified = [];
 
     navigation.classList.add("vanilla-tagger-navigation");
 
     host.context.navigation = navigation;
 
-    host.context.tags.forEach(function (tag) {
+    host.tags.forEach(function (tag) {
+      let popup = tag.popup;
+
+      popup.showOn = "hover;";
+
+      tagsModified.push(tag);
+
       _addNav(host, tag, navigation);
     });
+
+    host.tags = tagsModified;
 
     host.addEventListener("click", function (event) {
       _removeHighlight(host);
