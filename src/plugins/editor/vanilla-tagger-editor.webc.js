@@ -1,14 +1,16 @@
 "use strict";
 
-(function () {
+(function (EditorTemplates) {
   /*-----------------------------------------------------------------------------------------*/
 
   const toolbarTemplate = `
     <form class="vanilla-tagger-toolbar">
-     <input type="radio" name="tagType" id="tagTypeDot" value="dot" checked>
+
+     <input type="radio" class="toggler" name="tagType" id="tagTypeDot" value="dot" checked>
      <label for="tagTypeDot">Dot</label>     
-     <input type="radio" name="tagType" id="tagTypeHotspot" value="hotspot" disabled>
+     <input type="radio" class="toggler" name="tagType" id="tagTypeHotspot" value="hotspot" disabled>
      <label for="tagTypeHotspot">Hotspot</label>
+
     </form>
   `;
 
@@ -19,11 +21,22 @@
         <header></header>
         <main></main>
         <footer>
-            <button class="btn-confirm">OK</button>
-            <button class="btn-cancel">Cancel</button>
         </footer>
     </dialog>
     `;
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const dialogHeaderTemplate = (tag) => `
+    Tag #${tag.index} <button data-index="${tag.index}" class="btn-remove">Remove</button>
+    `;
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const dialogFooterTemplate = (tag) => `
+    <button class="btn-confirm" type="submit" data-index="${tag.index}">OK</button>
+    <button class="btn-cancel">Cancel</button>
+  `;
 
   /*-----------------------------------------------------------------------------------------*/
   /*---------------------------------- WEBCOMPONENT CLASS -----------------------------------*/
@@ -116,12 +129,7 @@
     if (window.dialogPolyfill)
       window.dialogPolyfill.registerDialog(host.context.dialog);
 
-    _attachEditorEvents(host);
-
-    _attachHostEvents(
-      "mousedown mouseup mousemove touchstart touchend touchmove click",
-      host
-    );
+    _attachEvents(host);
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -164,31 +172,10 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _attachEditorEvents = function _attachEditorEvents(host) {
-    host.context.toolbar
-      .querySelectorAll("[name='tagType']")
-      .forEach(function (chk) {
-        chk.addEventListener("change", function (event) {
-          host.dataset.type = this.getAttribute("value");
-        });
-      });
+  const _attachEvents = function _attachEvents(host) {
+    let eventNames =
+      "mousedown mouseup mousemove touchstart touchend touchmove click";
 
-    host.context.dialog
-      .querySelector(".btn-confirm")
-      .addEventListener("click", function (event) {
-        host.context.dialog.close();
-      });
-
-    host.context.dialog
-      .querySelector(".btn-cancel")
-      .addEventListener("click", function (event) {
-        host.context.dialog.close();
-      });
-  };
-
-  /*-----------------------------------------------------------------------------------------*/
-
-  const _attachHostEvents = function _attachHostEvents(eventNames, host) {
     eventNames.split(" ").forEach(function (eventName) {
       host.addEventListener(
         eventName,
@@ -199,8 +186,27 @@
       );
     });
 
+    host.context.toolbar
+      .querySelectorAll("[name='tagType']")
+      .forEach(function (chk) {
+        chk.addEventListener("change", function (event) {
+          host.dataset.type = this.getAttribute("value");
+        });
+      });
+
     host.addEventListener("VanillaTagger:tagClick", function (e) {
       _openEditDialog(host, e.detail);
+    });
+
+    host.context.dialog.addEventListener("click", function (event) {
+      const btn = event.target;
+
+      if (btn.classList.contains("btn-remove"))
+        _removeTag(host, btn.dataset.index);
+      else if (btn.classList.contains("btn-confirm"))
+        _updateTag(host, btn.dataset.index);
+      else if (btn.classList.contains("btn-cancel"))
+        host.context.dialog.close();
     });
   };
 
@@ -226,7 +232,10 @@
       coords = _percentValues(host, x, y);
 
     dot.classes =
-      "tag dot light with-border with-shadow pulsating-onhover show-index";
+      "tag dot" +
+      (EditorTemplates && EditorTemplates.tagDefaultClasses
+        ? " " + EditorTemplates.tagDefaultClasses
+        : "");
     dot.top = coords.y;
     dot.left = coords.x;
 
@@ -262,7 +271,46 @@
   const _renderEditDialog = function _renderEditDialog(host, tag) {
     const dialog = host.context.dialog;
 
-    dialog.querySelector("header").innerHTML = "Tag #" + tag.index;
+    dialog.querySelector("header").innerHTML = dialogHeaderTemplate(tag);
+    dialog.querySelector("footer").innerHTML = dialogFooterTemplate(tag);
+
+    if (EditorTemplates && EditorTemplates.tagForm) {
+      dialog.querySelector("main").innerHTML = EditorTemplates.tagForm(tag);
+    }
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _removeTag = function _removeTag(host, index) {
+    if (confirm("Are you sure?")) {
+      let tags = host.tags;
+      tags.splice(index - 1, 1);
+      host.tags = tags;
+
+      host.context.dialog.close();
+    }
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _updateTag = function _updateTag(host, index) {
+    //alert(index);
+
+    let form = host.context.dialog.querySelector("form");
+
+    if (!form.checkValidity()) {
+      return false;
+    }
+
+    if (EditorTemplates && EditorTemplates.buildTag) {
+      let tags = host.tags;
+
+      tags[index - 1] = EditorTemplates.buildTag(tags[index - 1], form);
+
+      host.tags = tags;
+    }
+
+    host.context.dialog.close();
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -272,4 +320,4 @@
   customElements.define("vanilla-tagger-editor", VanillaTaggerEditor);
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
-})();
+})(VanillaTaggerEditorTemplates);

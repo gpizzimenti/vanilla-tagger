@@ -7,7 +7,7 @@
 
   class VanillaTaggerNavigation extends VanillaTagger {
     static get observedAttributes() {
-      return ["src", "placeholder", "data-tags", "data-trigger"];
+      return ["src", "placeholder", "data-tags"];
     }
 
     /*--------------------------------- CLASS METHODS ---------------------------------------*/
@@ -29,17 +29,6 @@
 
     set placeholder(value) {
       this.setAttribute("placeholder", value);
-    }
-
-    /*---------------------------------------------------------------------------------------*/
-
-    get trigger() {
-      return this.dataset.trigger;
-    }
-    /*---------------------------------------------------------------------------------------*/
-
-    set trigger(value) {
-      this.dataset.trigger = value;
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -66,14 +55,22 @@
   /*------------------------------------------------------------------------------------------*/
 
   const _renderNavigation = function _renderNavigation(host) {
-    if (!host.placeholder) return false;
-    let containers = document.querySelectorAll(host.placeholder),
-      navigation = document.createElement("ol"),
+    let navigation,
       tagsModified = [];
 
-    navigation.classList.add("vanilla-tagger-navigation");
+    if (host.placeholder) {
+      let containers = document.querySelectorAll(host.placeholder);
 
-    host.context.navigation = navigation;
+      navigation = document.createElement("ol");
+      navigation.classList.add("vanilla-tagger-navigation");
+
+      host.context.navigation = navigation;
+
+      containers.forEach(function (container) {
+        container.innerHTML = "";
+        container.appendChild(navigation);
+      });
+    }
 
     host.tags.forEach(function (tag) {
       let popup = tag.popup;
@@ -82,7 +79,7 @@
 
       tagsModified.push(tag);
 
-      _addNav(host, tag, navigation);
+      if (navigation) _addNav(host, tag, navigation);
     });
 
     host.tags = tagsModified;
@@ -95,11 +92,6 @@
       let tag = event.detail;
       _toggleTag(host, tag);
     });
-
-    containers.forEach(function (container) {
-      container.innerHTML = "";
-      container.appendChild(navigation);
-    });
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -109,38 +101,44 @@
 
     nav.dataset.index = tag.index;
     nav.dataset.indexAlphabetical = tag.indexAlphabetical;
+    tag.classes.split(" ").forEach(function (cl, index) {
+      nav.classList.add("vanilla-tagger-" + cl);
+    });
+
     nav.innerHTML = tag.caption;
 
     nav.addEventListener("click", function (event) {
       _toggleTag(host, tag);
     });
 
-    //nav.addEventListener(host.dataset.trigger, function (event) { //alternative to tagClick tio highlight
     navigation.appendChild(nav);
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
   const _toggleTag = function _toggleTag(host, tag) {
-    let nav = host.context.navigation.querySelector(
-      "[data-index='" + tag.index + "']"
-    );
-
-    if (nav.classList.contains("active")) {
-      _removeHighlight(host);
-      return false;
-    }
-
     let options = {
-        state: false,
-        exclusive: true,
-        highlightedClasses: "toggled show-popup pulsating",
-      },
-      activeNav = host.context.navigation.querySelector(".active");
+      state: false,
+      exclusive: true,
+      highlightedClasses: "toggled show-popup pulsating",
+    };
 
-    if (activeNav) activeNav.classList.remove("active");
+    if (host.context.navigation) {
+      let nav = host.context.navigation.querySelector(
+        "[data-index='" + tag.index + "']"
+      );
 
-    nav.classList.add("active");
+      if (nav.classList.contains("active")) {
+        _removeHighlight(host);
+        return false;
+      }
+
+      let activeNav = host.context.navigation.querySelector(".active");
+
+      if (activeNav) activeNav.classList.remove("active");
+
+      nav.classList.add("active");
+    }
 
     options.tag = tag;
     options.state = true;
@@ -157,8 +155,10 @@
       highlightedClasses: "toggled show-popup pulsating",
     };
 
-    let activeNav = host.context.navigation.querySelector(".active");
-    if (activeNav) activeNav.classList.remove("active");
+    if (host.context.navigation) {
+      let activeNav = host.context.navigation.querySelector(".active");
+      if (activeNav) activeNav.classList.remove("active");
+    }
 
     host.highlightTag(options);
   };

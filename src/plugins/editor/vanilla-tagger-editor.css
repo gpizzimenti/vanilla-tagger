@@ -2,12 +2,6 @@ body {
   font-family: sans-serif;
 }
 
-main {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
 #imgContainer {
   flex: 1;
   max-width: 1000px;
@@ -27,31 +21,75 @@ main {
   margin: 0;
 }
 
-.vanilla-tagger-toolbar input[type="radio"] {
+.vanilla-tagger-toolbar input.toggler {
   display: none;
   margin: 10px;
 }
 
-.vanilla-tagger-toolbar input[type="radio"] + label {
+.vanilla-tagger-toolbar input.toggler + label {
   display: inline-block;
   margin: -2px;
   padding: 4px 12px;
   background-color: #e7e7e7;
   border-color: #ddd;
   cursor: pointer;
+  position: relative;
 }
 
-.vanilla-tagger-toolbar input[type="radio"]:checked + label {
+.vanilla-tagger-toolbar input.toggler:checked + label {
   background-image: none;
   background-color: #d0d0d0;
 }
 
-.vanilla-tagger-toolbar input[type="radio"]:disabled + label {
+.vanilla-tagger-toolbar input.toggler:disabled + label {
   opacity: 0.5;
   pointer-events: none;
 }
 
+.vanilla-tagger-toolbar .popup {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  border-radius: 3px;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  width: 200px;
+  height: 200px;
+  transform-origin: top;
+  transform: translate(0, -10%);
+  transition: opacity 0.3s ease-out 0.2s, transform 0.3s ease-out 0.2s;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.vanilla-tagger-toolbar .popup:before {
+  display: block;
+  height: 0;
+  width: 0;
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  margin-left: -10px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid #fff;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  z-index: 3;
+  left: 10px;
+}
+
+.vanilla-tagger-toolbar input.toggler:checked + label .popup {
+  opacity: 1;
+  transform: translate(0, 0);
+  pointer-events: inherit;
+}
+
 .vanilla-tagger-dialog {
+  box-sizing: border-box;
   border-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   border-width: 2px;
@@ -59,11 +97,21 @@ main {
   color: #333;
   box-shadow: 1px 4px 4px 1px rgba(0, 0, 0, 0.35);
   padding: 0px;
+  min-width: 320px;
+  min-height: 120px;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .vanilla-tagger-dialog::backdrop {
   background-color: rgba(75, 75, 75, 0.2);
   backdrop-filter: blur(2px);
+}
+
+.vanilla-tagger-dialog form {
+  padding: 0;
+  margin: 0;
+  box-sizing: content-box;
 }
 
 .vanilla-tagger-dialog header {
@@ -72,11 +120,88 @@ main {
 }
 
 .vanilla-tagger-dialog main {
+  display: flex;
   padding: 5px 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .vanilla-tagger-dialog footer {
   padding: 10px;
   border-top: solid 1px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+.vanilla-tagger-dialog header:after,
+.vanilla-tagger-dialog footer:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.vanilla-tagger-dialog .btn-remove {
+  float: right;
+  border: solid 1px rgba(200, 0, 0, 1);
+  border-radius: 2px;
+  background-color: rgba(255, 0, 0, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.vanilla-tagger-dialog .btn-confirm {
+  float: left;
+  border: solid 1px rgba(50, 50, 50, 1);
+  border-radius: 2px;
+  background-color: rgba(100, 100, 100, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+.vanilla-tagger-dialog .btn-cancel {
+  float: right;
+  border: solid 1px rgba(100, 100, 100, 1);
+  border-radius: 2px;
+  background-color: rgba(200, 200, 200, 1);
+  color: rgba(0, 0, 0, 1);
+}
+
+.vanilla-tagger-dialog main form ul {
+  list-style-type: none;
+  padding: 5px 0;
+  margin: 0;
+  flex: 1;
+}
+
+.vanilla-tagger-dialog main form li {
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+.vanilla-tagger-dialog main form li:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.vanilla-tagger-dialog main form li label {
+  font-size: 0.9em;
+  font-weight: bold;
+
+  display: inline-block;
+  width: 120px;
+  padding-right: 10px;
+  line-height: 25px;
+  vertical-align: middle;
+}
+
+.vanilla-tagger-dialog main form li label + [type="text"],
+.vanilla-tagger-dialog main form li label + [type="url"],
+.vanilla-tagger-dialog main form li label + select {
+  display: block;
+  width: calc(100% - 145px);
+  float: right;
+  box-sizing: border-box;
+  height: 25px;
+}
+
+.vanilla-tagger-dialog input:invalid {
+  border: 2px solid red;
 }

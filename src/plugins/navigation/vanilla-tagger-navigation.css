@@ -71,3 +71,8 @@ body {
 .index-alphabetical .vanilla-tagger-navigation li::before {
   content: attr(data-index-alphabetical);
 }
+
+.vanilla-tagger-navigation li.vanilla-tagger-red:before {
+  background-color: rgba(255, 0, 0, 1);
+  color: #fff;
+}

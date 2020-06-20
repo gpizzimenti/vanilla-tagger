@@ -68,7 +68,7 @@
 
   class VanillaTagger extends HTMLElement {
     static get observedAttributes() {
-      return ["src", "data-tags"];
+      return ["src", "data-tags", "data-theme"];
     }
 
     /*--------------------------------- CLASS METHODS ---------------------------------------*/
@@ -102,6 +102,17 @@
 
     /*---------------------------------------------------------------------------------------*/
 
+    get theme() {
+      return this.dataset.theme;
+    }
+    /*---------------------------------------------------------------------------------------*/
+
+    set theme(value) {
+      this.dataset.theme = value;
+    }
+
+    /*---------------------------------------------------------------------------------------*/
+
     get tags() {
       return this.context.tags;
     }
@@ -131,6 +142,7 @@
 
       if (name === "src") _loadImage(this);
       else if (name === "data-tags") _loadTags(this);
+      else if (name === "data-theme") _applyStyles(this);
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -212,11 +224,18 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _applyStyles = async function _applyStyles(host) {
+    let componentStyles = host.shadowRoot.querySelectorAll("style, link");
+
+    componentStyles.forEach(function (el) {
+      host.shadowRoot.removeChild(el);
+    });
+
     let style = document.createElement("style");
     style.appendChild(document.createTextNode(baseStyle));
-    host.shadowRoot.appendChild(style);
+    host.shadowRoot.insertBefore(style, host.shadowRoot.firstChild); //prepend
 
-    const link = await _fetchStyle(themeUrl, host).catch(() => {
+    let urlTheme = host.dataset.theme ? host.dataset.theme : themeUrl;
+    const link = await _fetchStyle(urlTheme, host).catch(() => {
       throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
     });
 
@@ -244,7 +263,7 @@
       };
       link.href = url;
 
-      host.shadowRoot.appendChild(link);
+      host.shadowRoot.insertBefore(link, host.shadowRoot.firstChild); //prepend
     });
   };
 
@@ -383,7 +402,7 @@
       return false;
     }
 
-    if (host.context.tags.length > 0) _resetTags(host);
+    _resetTags(host);
 
     try {
       host.classList.add("updating");
