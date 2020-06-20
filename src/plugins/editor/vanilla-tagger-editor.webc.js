@@ -232,7 +232,7 @@
       coords = _percentValues(host, x, y);
 
     dot.classes =
-      "tag dot" +
+      "tag dot blank" +
       (EditorTemplates && EditorTemplates.tagDefaultClasses
         ? " " + EditorTemplates.tagDefaultClasses
         : "");
