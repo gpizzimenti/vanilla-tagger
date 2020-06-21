@@ -551,8 +551,11 @@
       };
 
       tag.setPopup = function (popup) {
+        if (!popup) return false;
         tag.popup = popup;
-        host.context.wrapper.removeChild(_getPopupElement(host, tag));
+
+        let popupEl = _getPopupElement(host, tag);
+        if (popupEl) host.context.wrapper.removeChild(popupEl);
         _attachPopup(host, _getElement(host, tag), tag);
       };
     } catch (err) {
@@ -580,6 +583,7 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _addClass = function _addClass(element, classNames, data) {
+    if (!classNames) return false;
     classNames.split(" ").forEach(function (className) {
       if (data && data.classes.indexOf(className) < 0)
         data.classes = data.classes + " " + className;
@@ -591,6 +595,7 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _removeClass = function _removeClass(element, classNames, data) {
+    if (!classNames) return false;
     classNames.split(" ").forEach(function (className) {
       if (data && data.classes)
         data.classes = data.classes
@@ -605,6 +610,7 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _hasClass = function _hasClass(element, className) {
+    if (!className) return false;
     return element.classList.contains(className);
   };
 
@@ -643,6 +649,7 @@
         closeButton.classList.add("close");
 
         closeButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           tag.removeClass("show-popup toggled");
           _throwEvent(host, "popupClosedByClick", tag);
         });

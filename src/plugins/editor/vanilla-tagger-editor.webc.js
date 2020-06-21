@@ -218,7 +218,8 @@
     let type = host.dataset.type;
 
     if (type === "dot" && event.type === "click") {
-      _addDot(host, event.offsetX, event.offsetY);
+      let tag = _addDot(host, event.offsetX, event.offsetY);
+      _openEditDialog(host, tag);
     }
   };
 
@@ -240,6 +241,8 @@
     tags.push(dot);
 
     host.tags = tags;
+
+    return host.getTagByIndex(host.tags.length);
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -292,8 +295,6 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _updateTag = function _updateTag(host, index) {
-    //alert(index);
-
     let form = host.context.dialog.querySelector("form");
 
     if (!form.checkValidity()) {
