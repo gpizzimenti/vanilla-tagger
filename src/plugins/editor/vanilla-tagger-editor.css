@@ -26,7 +26,9 @@ body {
   margin: 10px;
 }
 
-.vanilla-tagger-toolbar input.toggler + label {
+.vanilla-tagger-toolbar input.toggler + label,
+.vanilla-tagger-toolbar button {
+  border: solid 1px #eaeaea;
   display: inline-block;
   margin: -2px;
   padding: 4px 12px;
@@ -34,9 +36,13 @@ body {
   border-color: #ddd;
   cursor: pointer;
   position: relative;
+  font-size: 1em;
+  line-height: 1em;
+  vertical-align: middle;
 }
 
-.vanilla-tagger-toolbar input.toggler:checked + label {
+.vanilla-tagger-toolbar input.toggler:checked + label,
+.vanilla-tagger-toolbar button {
   background-image: none;
   background-color: #d0d0d0;
 }
@@ -104,6 +110,10 @@ body {
   overflow-y: auto;
 }
 
+#dialogExport {
+  max-width: 640px;
+}
+
 .vanilla-tagger-dialog::backdrop {
   background-color: rgba(75, 75, 75, 0.2);
   backdrop-filter: blur(2px);
@@ -125,6 +135,11 @@ body {
   padding: 5px 10px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.vanilla-tagger-dialog pre {
+  max-width: 100%;
+  overflow: auto;
 }
 
 .vanilla-tagger-dialog footer {
@@ -156,12 +171,16 @@ body {
   color: rgba(255, 255, 255, 1);
 }
 
-.vanilla-tagger-dialog .btn-cancel {
-  float: right;
+.vanilla-tagger-dialog .btn-cancel,
+.vanilla-tagger-dialog .btn-close {
   border: solid 1px rgba(100, 100, 100, 1);
   border-radius: 2px;
   background-color: rgba(200, 200, 200, 1);
   color: rgba(0, 0, 0, 1);
+}
+
+.vanilla-tagger-dialog .btn-cancel {
+  float: right;
 }
 
 .vanilla-tagger-dialog main form ul {

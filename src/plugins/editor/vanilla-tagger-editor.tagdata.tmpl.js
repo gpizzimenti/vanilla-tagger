@@ -9,10 +9,10 @@ window.VanillaTaggerEditorTemplates.tagDefaultClasses =
 
 window.VanillaTaggerEditorTemplates.popupDefaultClasses = "light closeable";
 
-window.VanillaTaggerEditorTemplates.popupDefaultProperties = [
-  { showOn: "toggle" },
-  { arrow: "center" },
-];
+window.VanillaTaggerEditorTemplates.popupDefaultProperties = {
+  showOn: "toggle",
+  arrow: "center",
+};
 
 /*-----------------------------------------------------------------------------------------*/
 
@@ -34,7 +34,7 @@ window.VanillaTaggerEditorTemplates.tagForm = (tag) => `
                 tag.classes.indexOf("show-index-alphabetical")) < 0
                 ? "selected"
                 : ""
-            }>Index numerical (0-9)</option>
+            }>Index numeric (0-9)</option>
             <option value="show-index show-index-alphabetical" ${
               tag.classes.indexOf("show-index-alphabetical") > -1
                 ? "selected"
@@ -190,6 +190,29 @@ window.VanillaTaggerEditorTemplates.buildTag = function buildTag(tag, form) {
   tag.addClass("toggled");
 
   return tag;
+};
+
+/*-----------------------------------------------------------------------------------------*/
+
+window.VanillaTaggerEditorTemplates.processTags = function processTags(host) {
+  let tags = [];
+
+  host.tags.forEach(function (tag, index) {
+    if (!tag.hasClass("blank")) {
+      tag.removeClass("toggled");
+
+      Object.keys(
+        window.VanillaTaggerEditorTemplates.popupDefaultProperties
+      ).forEach(function (key, index) {
+        tag.popup[key] =
+          window.VanillaTaggerEditorTemplates.popupDefaultProperties[key];
+      });
+
+      tags.push(tag);
+    }
+  });
+
+  return tags;
 };
 
 /*-----------------------------------------------------------------------------------------*/

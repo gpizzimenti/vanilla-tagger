@@ -4,23 +4,39 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const toolbarTemplate = `
-    <form class="vanilla-tagger-toolbar">
+    <form class="vanilla-tagger-toolbar" onsubmit="return false;">
 
      <input type="radio" class="toggler" name="tagType" id="tagTypeDot" value="dot" checked>
      <label for="tagTypeDot">Dot</label>     
      <input type="radio" class="toggler" name="tagType" id="tagTypeHotspot" value="hotspot" disabled>
      <label for="tagTypeHotspot">Hotspot</label>
 
+     &nbsp;&nbsp;
+
+     <button id="btn-export">Export data</button>
+
     </form>
   `;
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const dialogTemplate = `
-    <dialog class="vanilla-tagger-dialog">
+  const dialogFormTemplate = `
+    <dialog class="vanilla-tagger-dialog" id="dialogForm">
         <header></header>
         <main></main>
         <footer>
+        </footer>
+    </dialog>
+    `;
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const dialogExportTemplate = `
+    <dialog class="vanilla-tagger-dialog"  id="dialogExport">
+        <header>Export configuration data</header>
+        <main><pre></pre></main>
+        <footer>
+          <button class="btn-close">OK</button>
         </footer>
     </dialog>
     `;
@@ -93,9 +109,11 @@
     if (!host.placeholder) return false;
     let container = document.querySelector(host.placeholder),
       toolbarTmpl = document.createElement("template"),
-      dialogTmpl = document.createElement("template"),
+      dialogFormTmpl = document.createElement("template"),
+      dialogExportTmpl = document.createElement("template"),
       toolbar,
-      dialog;
+      dialogForm,
+      dialogExport;
 
     if (container.length < 1) return false;
 
@@ -116,18 +134,24 @@
 
     toolbarTmpl.innerHTML = toolbarTemplate;
     toolbar = toolbarTmpl.content.cloneNode(true);
-    dialogTmpl.innerHTML = dialogTemplate;
-    dialog = dialogTmpl.content.cloneNode(true);
+    dialogFormTmpl.innerHTML = dialogFormTemplate;
+    dialogForm = dialogFormTmpl.content.cloneNode(true);
+    dialogExportTmpl.innerHTML = dialogExportTemplate;
+    dialogExport = dialogExportTmpl.content.cloneNode(true);
 
     container.innerHTML = "";
     container.appendChild(toolbar);
-    container.appendChild(dialog);
+    container.appendChild(dialogForm);
+    container.appendChild(dialogExport);
 
     host.context.toolbar = container.querySelector(".vanilla-tagger-toolbar");
-    host.context.dialog = container.querySelector(".vanilla-tagger-dialog");
+    host.context.dialogForm = container.querySelector("#dialogForm");
+    host.context.dialogExport = container.querySelector("#dialogExport");
 
-    if (window.dialogPolyfill)
-      window.dialogPolyfill.registerDialog(host.context.dialog);
+    if (window.dialogPolyfill) {
+      window.dialogPolyfill.registerDialog(host.context.dialogForm);
+      window.dialogPolyfill.registerDialog(host.context.dialogExport);
+    }
 
     _attachEvents(host);
   };
@@ -194,11 +218,17 @@
         });
       });
 
+    host.context.toolbar
+      .querySelector("#btn-export")
+      .addEventListener("click", function (event) {
+        _openExportDialog(host);
+      });
+
     host.addEventListener("VanillaTagger:tagClick", function (e) {
       _openEditDialog(host, e.detail);
     });
 
-    host.context.dialog.addEventListener("click", function (event) {
+    host.context.dialogForm.addEventListener("click", function (event) {
       const btn = event.target;
 
       if (btn.classList.contains("btn-remove"))
@@ -206,7 +236,14 @@
       else if (btn.classList.contains("btn-confirm"))
         _updateTag(host, btn.dataset.index);
       else if (btn.classList.contains("btn-cancel"))
-        host.context.dialog.close();
+        host.context.dialogForm.close();
+    });
+
+    host.context.dialogExport.addEventListener("click", function (event) {
+      const btn = event.target;
+
+      if (btn.classList.contains("btn-close"))
+        host.context.dialogExport.close();
     });
   };
 
@@ -226,7 +263,7 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _addDot = function _addDot(host, x, y) {
-    let tags = [...host.tags],
+    let tags = host.tags,
       dot = {},
       coords = _percentValues(host, x, y);
 
@@ -260,17 +297,7 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _openEditDialog = function _openEditDialog(host, tag) {
-    const dialog = host.context.dialog;
-
-    _renderEditDialog(host, tag);
-
-    dialog.showModal();
-  };
-
-  /*-----------------------------------------------------------------------------------------*/
-
-  const _renderEditDialog = function _renderEditDialog(host, tag) {
-    const dialog = host.context.dialog;
+    const dialog = host.context.dialogForm;
 
     dialog.querySelector("header").innerHTML = dialogHeaderTemplate(tag);
     dialog.querySelector("footer").innerHTML = dialogFooterTemplate(tag);
@@ -278,6 +305,33 @@
     if (EditorTemplates && EditorTemplates.tagForm) {
       dialog.querySelector("main").innerHTML = EditorTemplates.tagForm(tag);
     }
+
+    dialog.showModal();
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _openExportDialog = function _openExportDialog(host) {
+    const dialog = host.context.dialogExport,
+      pre = document.createElement("pre"),
+      exportData = {};
+
+    exportData.src = host.src;
+    exportData.placeholder = host.placeholder;
+
+    if (EditorTemplates && EditorTemplates.processTags) {
+      exportData.tags = EditorTemplates.processTags(host);
+    } else {
+      exportData.tags = host.tags;
+    }
+
+    dialog.querySelector("pre").textContent = JSON.stringify(
+      exportData,
+      undefined,
+      2
+    );
+
+    dialog.showModal();
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -288,14 +342,14 @@
       tags.splice(index - 1, 1);
       host.tags = tags;
 
-      host.context.dialog.close();
+      host.context.dialogForm.close();
     }
   };
 
   /*-----------------------------------------------------------------------------------------*/
 
   const _updateTag = function _updateTag(host, index) {
-    let form = host.context.dialog.querySelector("form");
+    let form = host.context.dialogForm.querySelector("form");
 
     if (!form.checkValidity()) {
       return false;
@@ -309,7 +363,7 @@
       host.tags = tags;
     }
 
-    host.context.dialog.close();
+    host.context.dialogForm.close();
   };
 
   /*-----------------------------------------------------------------------------------------*/
