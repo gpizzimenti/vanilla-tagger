@@ -2,23 +2,28 @@ body {
   font-family: sans-serif;
 }
 
+main {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  max-width: 1920px;
+}
+
 @media screen and (min-width: 640px) {
   main {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-  }
-
-  #imgContainer {
-    flex: 1;
-    max-width: 1000px;
-    z-index: 2;
+    flex-direction: row-reverse;
   }
 
   #navContainer {
     width: 20%;
     padding: 0 15px;
     z-index: 1;
+  }
+
+  #imgContainer {
+    flex: 1;
+    width: 100%;
+    z-index: 2;
   }
 
   #v-tagger {

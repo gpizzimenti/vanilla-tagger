@@ -213,10 +213,11 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _handleEvent = function _handleEvent(host, event) {
+    event.stopPropagation();
+
     let type = host.dataset.type;
 
     if (type === "dot" && event.type === "click") {
-      event.stopPropagation();
       _addDot(host, event.offsetX, event.offsetY);
     }
   };
