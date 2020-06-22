@@ -200,15 +200,16 @@ window.VanillaTaggerEditorTemplates.processTags = function processTags(host) {
   host.tags.forEach(function (tag, index) {
     if (!tag.hasClass("blank")) {
       tag.removeClass("toggled");
+      let publishedTag = { ...tag }; //clone
 
       Object.keys(
         window.VanillaTaggerEditorTemplates.popupDefaultProperties
       ).forEach(function (key, index) {
-        tag.popup[key] =
+        publishedTag.popup[key] =
           window.VanillaTaggerEditorTemplates.popupDefaultProperties[key];
       });
 
-      tags.push(tag);
+      tags.push(publishedTag);
     }
   });
 
