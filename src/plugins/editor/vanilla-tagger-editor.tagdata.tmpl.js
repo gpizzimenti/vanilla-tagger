@@ -184,8 +184,12 @@ window.VanillaTaggerEditorTemplates.buildTag = function buildTag(tag, form) {
   newPopup.content = window.VanillaTaggerEditorTemplates.popupContent(newPopup);
   tag.setPopup(newPopup);
 
-  if (tag.hasClass("show-index") && tag.classes.indexOf("icon-") > -1)
+  if (
+    (tag.hasClass("show-index") || tag.hasClass("show-caption")) &&
+    tag.classes.indexOf("icon-") > -1
+  )
     tag.addClass("show-index-ontop");
+  else tag.removeClass("show-index-ontop");
 
   tag.addClass("toggled");
 
