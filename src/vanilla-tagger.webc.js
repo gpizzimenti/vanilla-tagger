@@ -68,7 +68,7 @@
 
   class VanillaTagger extends HTMLElement {
     static get observedAttributes() {
-      return ["src", "data-tags", "data-theme"];
+      return ["src", "data-tags", "data-theme", "data-theme-text"];
     }
 
     /*--------------------------------- CLASS METHODS ---------------------------------------*/
@@ -113,6 +113,17 @@
 
     /*---------------------------------------------------------------------------------------*/
 
+    get themeText() {
+      return this.dataset.themeText;
+    }
+    /*---------------------------------------------------------------------------------------*/
+
+    set themeText(value) {
+      this.dataset.themeText = value;
+    }
+
+    /*---------------------------------------------------------------------------------------*/
+
     get tags() {
       return this.context.tags;
     }
@@ -142,7 +153,8 @@
 
       if (name === "src") _loadImage(this);
       else if (name === "data-tags") _loadTags(this);
-      else if (name === "data-theme") _applyStyles(this);
+      else if (name === "data-theme" || name === "data-theme-text")
+        _applyStyles(this);
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -234,10 +246,16 @@
     style.appendChild(document.createTextNode(baseStyle));
     host.shadowRoot.insertBefore(style, host.shadowRoot.firstChild); //prepend
 
-    let urlTheme = host.dataset.theme ? host.dataset.theme : themeUrl;
-    const link = await _fetchStyle(urlTheme, host).catch(() => {
-      throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
-    });
+    if (host.dataset.themeText) {
+      let styleCustom = document.createElement("style");
+      styleCustom.appendChild(document.createTextNode(host.dataset.themeText));
+      host.shadowRoot.insertBefore(styleCustom, host.shadowRoot.firstChild); //prepend
+    } else {
+      let urlTheme = host.dataset.theme ? host.dataset.theme : themeUrl;
+      const link = await _fetchStyle(urlTheme, host).catch(() => {
+        throw new VanillaTaggerError(`Can't load theme => ${themeUrl}`);
+      });
+    }
 
     const smallBp = getComputedStyle(host).getPropertyValue(
       "--format-small-trigger"

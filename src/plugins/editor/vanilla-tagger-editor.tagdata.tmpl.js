@@ -17,7 +17,6 @@ window.VanillaTaggerEditorTemplates.popupDefaultProperties = {
 /*-----------------------------------------------------------------------------------------*/
 
 window.VanillaTaggerEditorTemplates.tagForm = (tag) => `
-<form class="vanilla-tagger-tagdata">
 <ul class="tagFields">
     <li>
         <label for="tag.properties.caption">Caption</label>
@@ -135,7 +134,6 @@ window.VanillaTaggerEditorTemplates.tagForm = (tag) => `
     </li>
   </fieldset>  
 </ul>    
-</form>
 `;
 
 /*-----------------------------------------------------------------------------------------*/

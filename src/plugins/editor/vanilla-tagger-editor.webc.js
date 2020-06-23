@@ -86,10 +86,11 @@
 
     attributeChangedCallback(name, oldValue, newValue) {
       if (
-        !this ||
-        !this.context.wrapper ||
-        this.classList.contains("updating") ||
-        oldValue === newValue
+        oldValue === newValue ||
+        (name !== "placeholder" &&
+          (!this ||
+            !this.context.wrapper ||
+            this.classList.contains("updating")))
       )
         return false;
 
@@ -229,6 +230,9 @@
     });
 
     host.context.dialogForm.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
       const btn = event.target;
 
       if (btn.classList.contains("btn-remove"))
@@ -240,6 +244,9 @@
     });
 
     host.context.dialogExport.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
       const btn = event.target;
 
       if (btn.classList.contains("btn-close"))
@@ -250,6 +257,7 @@
   /*-----------------------------------------------------------------------------------------*/
 
   const _handleEvent = function _handleEvent(host, event) {
+    event.preventDefault();
     event.stopPropagation();
 
     let type = host.dataset.type;
@@ -303,7 +311,17 @@
     dialog.querySelector("footer").innerHTML = dialogFooterTemplate(tag);
 
     if (EditorTemplates && EditorTemplates.tagForm) {
-      dialog.querySelector("main").innerHTML = EditorTemplates.tagForm(tag);
+      let form = document.createElement("form");
+      form.classList.add("vanilla-tagger-tagdata");
+      form.onsubmit = function (evt) {
+        evt.preventDefault();
+        return false;
+      };
+      form.innerHTML = EditorTemplates.tagForm(tag);
+
+      let main = dialog.querySelector("main");
+      main.innerHTML = "";
+      main.appendChild(form);
     }
 
     dialog.showModal();
