@@ -7,7 +7,13 @@
 
   class VanillaTaggerNavigation extends VanillaTagger {
     static get observedAttributes() {
-      return ["src", "placeholder", "data-tags"];
+      return [
+        "src",
+        "placeholder",
+        "data-tags",
+        "data-theme",
+        "data-theme-text",
+      ];
     }
 
     /*--------------------------------- CLASS METHODS ---------------------------------------*/
@@ -16,7 +22,10 @@
       super();
 
       this.addEventListener("VanillaTagger:tagsLoaded", function (e) {
-        _renderNavigation(this);
+        let host = this;
+        _ready(function () {
+          _renderNavigation(host);
+        });
       });
     }
 
@@ -44,7 +53,12 @@
 
       if (name === "src") this.loadImage();
       else if (name === "data-tags") this.loadTags();
-      else _renderNavigation(this);
+      else if (name === "data-theme" || name === "data-theme-text")
+        this.applyStyles();
+      else
+        _ready(function () {
+          _renderNavigation(host);
+        });
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -54,22 +68,41 @@
   /*------------------------------------- PRIVATE METHODS ------------------------------------*/
   /*------------------------------------------------------------------------------------------*/
 
+  /*----------------------------------------------------------------------------------------*/
+
+  const _ready = function _ready(fn) {
+    if (
+      document.attachEvent
+        ? document.readyState === "complete"
+        : document.readyState !== "loading"
+    ) {
+      fn();
+    } else {
+      document.addEventListener("DOMContentLoaded", fn);
+    }
+  };
+
+  /*----------------------------------------------------------------------------------------*/
+
   const _renderNavigation = function _renderNavigation(host) {
     let navigation,
-      tagsModified = [];
+      tagsModified = [],
+      containers;
 
     if (host.placeholder) {
-      let containers = document.querySelectorAll(host.placeholder);
+      containers = document.querySelectorAll(host.placeholder);
 
       navigation = document.createElement("ol");
       navigation.classList.add("vanilla-tagger-navigation");
 
       host.context.navigation = navigation;
 
-      containers.forEach(function (container) {
-        container.innerHTML = "";
-        container.appendChild(navigation);
-      });
+      if (containers) {
+        containers.forEach(function (container) {
+          container.innerHTML = "";
+          container.appendChild(navigation);
+        });
+      }
     }
 
     host.tags.forEach(function (tag) {
@@ -84,14 +117,18 @@
 
     host.tags = tagsModified;
 
-    host.addEventListener("click", function (event) {
-      _removeHighlight(host);
-    });
+    if (!host.classList.contains("navigation-rendered")) {
+      host.addEventListener("click", function (event) {
+        _removeHighlight(host);
+      });
 
-    host.addEventListener("VanillaTagger:tagClick", function (event) {
-      let tag = event.detail;
-      _toggleTag(host, tag);
-    });
+      host.addEventListener("VanillaTagger:tagClick", function (event) {
+        let tag = event.detail;
+        _toggleTag(host, tag);
+      });
+
+      host.classList.add("navigation-rendered");
+    }
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -166,9 +203,12 @@
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 
-  window.VanillaTaggerNavigation = VanillaTaggerNavigation;
+  if (!window.VanillaTaggerNavigation) {
+    window.VanillaTaggerNavigation = VanillaTaggerNavigation;
 
-  customElements.define("vanilla-tagger-navigation", VanillaTaggerNavigation);
+    customElements.define("vanilla-tagger-navigation", VanillaTaggerNavigation);
+  }
+
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 })();

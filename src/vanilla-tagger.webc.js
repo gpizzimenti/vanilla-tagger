@@ -196,6 +196,12 @@
     }
 
     /*----------------------------------------------------------------------------------------*/
+
+    applyStyles() {
+      _applyStyles(this);
+    }
+
+    /*----------------------------------------------------------------------------------------*/
   } //END WEBCOMPONENT CLASS
 
   /*------------------------------------------------------------------------------------------*/
@@ -837,6 +843,7 @@
               "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
           element.addEventListener(eventName, function (e) {
+            e.preventDefault();
             e.stopPropagation();
 
             _throwEvent(host, eventNameToThrow, tag);
@@ -869,9 +876,12 @@
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 
-  window.VanillaTagger = VanillaTagger;
+  if (!window.VanillaTagger) {
+    window.VanillaTagger = VanillaTagger;
 
-  customElements.define("vanilla-tagger", VanillaTagger);
+    customElements.define("vanilla-tagger", VanillaTagger);
+  }
+
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 })();

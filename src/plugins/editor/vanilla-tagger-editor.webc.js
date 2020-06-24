@@ -60,7 +60,13 @@
 
   class VanillaTaggerEditor extends VanillaTagger {
     static get observedAttributes() {
-      return ["src", "placeholder", "data-tags"];
+      return [
+        "src",
+        "placeholder",
+        "data-tags",
+        "data-theme",
+        "data-theme-text",
+      ];
     }
 
     /*--------------------------------- CLASS METHODS ---------------------------------------*/
@@ -76,10 +82,17 @@
     get placeholder() {
       return this.getAttribute("placeholder");
     }
+
     /*---------------------------------------------------------------------------------------*/
 
     set placeholder(value) {
       this.setAttribute("placeholder", value);
+    }
+
+    /*---------------------------------------------------------------------------------------*/
+
+    get publishedTags() {
+      return EditorTemplates.processTags(host);
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -96,7 +109,9 @@
 
       if (name === "src") this.loadImage();
       else if (name === "data-tags") this.loadTags();
-      else _renderEditor(this);
+      else if (name === "data-theme" || name === "data-theme-text")
+        this.applyStyles();
+      else if (!this.classList.contains("editor-rendered")) _renderEditor(this);
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -155,6 +170,8 @@
     }
 
     _attachEvents(host);
+
+    host.classList.add("editor-rendered");
   };
 
   /*-----------------------------------------------------------------------------------------*/
@@ -386,9 +403,12 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  window.VanillaTaggerEditor = VanillaTaggerEditor;
+  if (!window.VanillaTaggerEditor) {
+    window.VanillaTaggerEditor = VanillaTaggerEditor;
 
-  customElements.define("vanilla-tagger-editor", VanillaTaggerEditor);
+    customElements.define("vanilla-tagger-editor", VanillaTaggerEditor);
+  }
+
   /*-----------------------------------------------------------------------------------------*/
   /*-----------------------------------------------------------------------------------------*/
 })(VanillaTaggerEditorTemplates);
