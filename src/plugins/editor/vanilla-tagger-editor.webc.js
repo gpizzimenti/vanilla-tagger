@@ -74,7 +74,10 @@
     constructor() {
       super();
 
-      _renderEditor(this);
+      let host = this;
+      _ready(function () {
+        _renderEditor(host);
+      });
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -92,12 +95,14 @@
     /*---------------------------------------------------------------------------------------*/
 
     get publishedTags() {
-      return EditorTemplates.processTags(host);
+      return EditorTemplates.processTags(this);
     }
 
     /*---------------------------------------------------------------------------------------*/
 
     attributeChangedCallback(name, oldValue, newValue) {
+      let host = this;
+
       if (
         oldValue === newValue ||
         (name !== "placeholder" &&
@@ -111,7 +116,10 @@
       else if (name === "data-tags") this.loadTags();
       else if (name === "data-theme" || name === "data-theme-text")
         this.applyStyles();
-      else if (!this.classList.contains("editor-rendered")) _renderEditor(this);
+      else if (!this.classList.contains("editor-rendered"))
+        _ready(function () {
+          _renderEditor(host);
+        });
     }
 
     /*----------------------------------------------------------------------------------------*/
@@ -120,6 +128,22 @@
   /*------------------------------------------------------------------------------------------*/
   /*------------------------------------- PRIVATE METHODS ------------------------------------*/
   /*------------------------------------------------------------------------------------------*/
+
+  /*----------------------------------------------------------------------------------------*/
+
+  const _ready = function _ready(fn) {
+    if (
+      document.attachEvent
+        ? document.readyState === "complete"
+        : document.readyState !== "loading"
+    ) {
+      fn();
+    } else {
+      document.addEventListener("DOMContentLoaded", fn);
+    }
+  };
+
+  /*----------------------------------------------------------------------------------------*/
 
   const _renderEditor = async function _renderEditor(host) {
     if (!host.placeholder) return false;

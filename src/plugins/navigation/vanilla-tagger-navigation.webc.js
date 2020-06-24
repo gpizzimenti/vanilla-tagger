@@ -43,6 +43,8 @@
     /*---------------------------------------------------------------------------------------*/
 
     attributeChangedCallback(name, oldValue, newValue) {
+      let host = this;
+
       if (
         !this ||
         !this.context.wrapper ||
