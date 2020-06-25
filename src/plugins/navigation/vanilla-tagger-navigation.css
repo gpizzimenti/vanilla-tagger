@@ -73,6 +73,7 @@
   line-height: 30px;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 15px;
+  position: relative;
 }
 
 .vanilla-tagger-navigation li.active {
@@ -98,6 +99,20 @@
   vertical-align: middle;
 }
 
+.vanilla-tagger-navigation li::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  border-left: solid 2px red;
+  left: 19px;
+  top: 48px;
+  height: calc(100% - 38px);
+}
+
+.vanilla-tagger-navigation li:last-of-type::after {
+  display: none;
+}
+
 .vanilla-tagger-navigation li.active::before {
   border: solid 2px #000;
 }
@@ -106,7 +121,7 @@
   content: attr(data-index-alphabetical);
 }
 
-.vanilla-tagger-navigation li.vanilla-tagger-red:before {
+.vanilla-tagger-navigation li.vanilla-tagger-red::before {
   background-color: rgba(255, 0, 0, 1);
   color: #fff;
 }
