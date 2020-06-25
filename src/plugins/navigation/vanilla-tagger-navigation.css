@@ -31,6 +31,16 @@ main {
   }
 }
 
+.vanilla-tagger-navigation[title]:before {
+  content: attr(title);
+  display: block;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+  font-size: 15.2px;
+  letter-spacing: 0.11px;
+  text-align: left;
+}
+
 .vanilla-tagger-navigation {
   padding: 0;
   margin: 0;
@@ -73,7 +83,7 @@ main {
   border: solid 2px #000;
 }
 
-.index-alphabetical .vanilla-tagger-navigation li::before {
+.vanilla-tagger-navigation li.vanilla-tagger-show-index-alphabetical::before {
   content: attr(data-index-alphabetical);
 }
 

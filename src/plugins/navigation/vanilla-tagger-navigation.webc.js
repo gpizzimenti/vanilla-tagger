@@ -10,6 +10,7 @@
       return [
         "src",
         "placeholder",
+        "title",
         "data-tags",
         "data-theme",
         "data-theme-text",
@@ -38,6 +39,17 @@
 
     set placeholder(value) {
       this.setAttribute("placeholder", value);
+    }
+
+    /*---------------------------------------------------------------------------------------*/
+
+    get title() {
+      return this.getAttribute("title");
+    }
+    /*---------------------------------------------------------------------------------------*/
+
+    set title(value) {
+      this.setAttribute("title", value);
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -96,6 +108,9 @@
 
       navigation = document.createElement("ol");
       navigation.classList.add("vanilla-tagger-navigation");
+      if (host.title) {
+        navigation.title = host.title;
+      }
 
       host.context.navigation = navigation;
 
@@ -103,6 +118,10 @@
         containers.forEach(function (container) {
           container.innerHTML = "";
           container.appendChild(navigation);
+
+          if (host.title) {
+            container.title = host.title;
+          }
         });
       }
     }

@@ -95,7 +95,8 @@
     /*---------------------------------------------------------------------------------------*/
 
     get publishedTags() {
-      return EditorTemplates.processTags(this);
+      let host = this;
+      return EditorTemplates.processTags(host);
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -116,7 +117,7 @@
       else if (name === "data-tags") this.loadTags();
       else if (name === "data-theme" || name === "data-theme-text")
         this.applyStyles();
-      else if (!this.classList.contains("editor-rendered"))
+      else
         _ready(function () {
           _renderEditor(host);
         });
@@ -146,7 +147,9 @@
   /*----------------------------------------------------------------------------------------*/
 
   const _renderEditor = async function _renderEditor(host) {
-    if (!host.placeholder) return false;
+    if (!host.placeholder || host.classList.contains("editor-rendered"))
+      return false;
+
     let container = document.querySelector(host.placeholder),
       toolbarTmpl = document.createElement("template"),
       dialogFormTmpl = document.createElement("template"),
@@ -266,8 +269,11 @@
         _openExportDialog(host);
       });
 
-    host.addEventListener("VanillaTagger:tagClick", function (e) {
-      _openEditDialog(host, e.detail);
+    host.addEventListener("VanillaTagger:tagClick", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      _openEditDialog(host, event.detail);
     });
 
     host.context.dialogForm.addEventListener("click", function (event) {
