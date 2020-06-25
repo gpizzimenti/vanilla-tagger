@@ -196,6 +196,9 @@
       if (activeNav) activeNav.classList.remove("active");
 
       nav.classList.add("active");
+
+      host.context.navigation.scrollTop =
+        nav.offsetTop - (nav.offsetTop - nav.scrollTop + nav.clientTop);
     }
 
     options.tag = tag;
