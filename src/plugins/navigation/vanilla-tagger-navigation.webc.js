@@ -197,8 +197,7 @@
 
       nav.classList.add("active");
 
-      host.context.navigation.scrollTop =
-        nav.offsetTop - (nav.offsetTop - nav.scrollTop + nav.clientTop);
+      host.context.navigation.scrollTop = nav.offsetTop - nav.offsetHeight;
     }
 
     options.tag = tag;
