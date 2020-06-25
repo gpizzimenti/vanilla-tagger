@@ -1,7 +1,6 @@
 :root {
-  --color-fg: 100, 100, 100;
-  --shadow-navigator: 1px 4px 4px 1px rgba(0, 0, 0, 0.35);
-
+  --color-fg-beweb: 132, 117, 65;
+  --shadow-navigator: 0 2px 19px 0 rgba(0, 0, 0, 0.18);
   --scrollbarBG: 255, 255, 255;
   --scrollbarFG: 127, 127, 127;
 }
@@ -32,6 +31,8 @@
   overflow: hidden;
 
   box-shadow: var(--shadow-navigator);
+
+  position: relative;
 }
 
 .vtagger-navcontainer[title]:before {
@@ -43,7 +44,7 @@
   font-size: 15.2px;
   letter-spacing: 0.11px;
   text-align: center;
-  color: rgba(var(--color-fg), 1);
+  color: rgba(var(--color-fg-beweb), 1);
 }
 
 .vanilla-tagger-navigation {
