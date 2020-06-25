@@ -31,15 +31,20 @@
       container for your navigation index
     </h3>
 
-    <main>
-      <aside id="navContainer"></aside>
-
-      <section id="imgContainer">
+    <button
+      onclick="document.getElementById('vtagger-navcontainer-1').classList.toggle('vt-inner');"
+    >
+      Toggle Inner/Outer Navigation
+    </button>
+    <br />
+    <br />
+    <section class="vtagger-wrapper">
+      <section class="vtagger-imgcontainer">
         <vanilla-tagger-navigation
           id="v-tagger"
           title="Kilkenny tour"
           src="https://images.unsplash.com/photo-1519412711294-ea7265523d5a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
-          placeholder="#navContainer"
+          placeholder="#vtagger-navcontainer-1"
           data-tags='[{
                         "top": 21,
                         "left": 16,
@@ -103,9 +108,9 @@
           >
         </vanilla-tagger-navigation>
       </section>
-    </main>
-
-    <br />
-    <br />
-  </body>
+      <aside
+        class="vtagger-navcontainer vt-inner"
+        id="vtagger-navcontainer-1"
+      ></aside>
+    </section>
 </html>

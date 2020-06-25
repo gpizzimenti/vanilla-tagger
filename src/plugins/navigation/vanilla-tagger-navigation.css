@@ -1,59 +1,77 @@
-body {
-  font-family: sans-serif;
+:root {
+  --color-fg: 100, 100, 100;
+  --shadow-navigator: 1px 4px 4px 1px rgba(0, 0, 0, 0.35);
+
+  --scrollbarBG: 255, 255, 255;
+  --scrollbarFG: 127, 127, 127;
 }
 
-main {
+.vtagger-wrapper {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 100%;
+  width: fit-content;
+  box-sizing: border-box;
+}
+
+.vtagger-imgcontainer {
+  z-index: 1;
+}
+
+.vtagger-navcontainer {
+  z-index: 2;
+  margin: 0;
+  padding: 0;
   width: 100%;
-  max-width: 1920px;
+  padding: 15px 0;
+
+  background-color: rgba(255, 255, 255, 1);
+  border: solid 1px rgba(255, 255, 255, 1);
+  border-radius: 4px;
+  overflow: hidden;
+
+  box-shadow: var(--shadow-navigator);
 }
 
-@media screen and (min-width: 640px) {
-  main {
-    flex-direction: row-reverse;
-  }
-
-  #navContainer {
-    width: 20%;
-    padding: 0 15px;
-    z-index: 1;
-  }
-
-  #imgContainer {
-    flex: 1;
-    width: 100%;
-    z-index: 2;
-  }
-
-  #v-tagger {
-    width: 100%;
-  }
-}
-
-.vanilla-tagger-navigation[title]:before {
+.vtagger-navcontainer[title]:before {
   content: attr(title);
   display: block;
-  margin: 0 0 15px 0;
+  margin: 0 0 5px 0;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: 600;
   font-size: 15.2px;
   letter-spacing: 0.11px;
-  text-align: left;
+  text-align: center;
+  color: rgba(var(--color-fg), 1);
 }
 
 .vanilla-tagger-navigation {
+  margin: 0 0 0 15px;
   padding: 0;
-  margin: 0;
-  list-style-type: none;
+}
+
+.vtagger-navcontainer.vt-inner {
+  padding: 15px 0;
+}
+
+.vtagger-navcontainer.vt-inner .vanilla-tagger-navigation {
+  max-height: 250px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  scroll-behavior: smooth;
 }
 
 .vanilla-tagger-navigation li {
   display: flex;
-  padding: 5px;
+  padding: 15px 5px;
   cursor: pointer;
   list-style: none;
   vertical-align: middle;
   line-height: 30px;
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 15px;
 }
 
 .vanilla-tagger-navigation li.active {
@@ -90,4 +108,38 @@ main {
 .vanilla-tagger-navigation li.vanilla-tagger-red:before {
   background-color: rgba(255, 0, 0, 1);
   color: #fff;
+}
+
+.vanilla-tagger-navigation {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--scrollbarBG), 1);
+}
+
+.vanilla-tagger-navigation::-webkit-scrollbar {
+  width: 6px;
+}
+.vanilla-tagger-navigation::-webkit-scrollbar-track {
+  background: rgba(var(--scrollbarBG), 1);
+}
+.vanilla-tagger-navigation::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--scrollbarFG), 1);
+  border-radius: 4px;
+}
+
+@media screen and (min-width: 900px) {
+  .vtagger-wrapper {
+    flex-direction: row;
+  }
+
+  .vtagger-navcontainer {
+    max-width: 300px;
+    padding: 0 0 15px 0;
+    box-shadow: unset;
+  }
+
+  .vtagger-navcontainer.vt-inner {
+    width: 300px;
+    margin: 20px 0 0 -320px;
+    box-shadow: var(--shadow-navigator);
+  }
 }
