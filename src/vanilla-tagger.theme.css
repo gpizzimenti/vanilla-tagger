@@ -163,6 +163,10 @@
   opacity: 0.3;
 }
 
+.dim-alltags .tag:hover {
+  opacity: 0.7;
+}
+
 .tag.highlight {
   opacity: 1;
 }
