@@ -840,13 +840,17 @@
         eventNames.split(" ").forEach(function (evt, index) {
           let eventName = evt,
             eventNameToThrow =
-              "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+              eventName.charAt(0).toUpperCase() + eventName.slice(1);
+
+          _getPopupElement(host, tag).addEventListener(eventName, function (e) {
+            _throwEvent(host, "popup" + eventNameToThrow, tag);
+          });
 
           element.addEventListener(eventName, function (e) {
             e.preventDefault();
             e.stopPropagation();
 
-            _throwEvent(host, eventNameToThrow, tag);
+            _throwEvent(host, "tag" + eventNameToThrow, tag);
 
             if (eventName === "click" || eventName === "mouseover") {
               requestAnimationFrame(function () {
