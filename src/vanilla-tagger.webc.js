@@ -843,7 +843,10 @@
               eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
           _getPopupElement(host, tag).addEventListener(eventName, function (e) {
-            _throwEvent(host, "popup" + eventNameToThrow, tag);
+            _throwEvent(host, "popup" + eventNameToThrow, {
+              tag: tag,
+              path: e.path,
+            });
           });
 
           element.addEventListener(eventName, function (e) {
