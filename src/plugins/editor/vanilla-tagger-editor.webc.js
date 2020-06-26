@@ -162,12 +162,14 @@
 
     if (typeof HTMLDialogElement != "function") {
       await Promise.all([
-        _fetchStyle(
+        _fetchResource(
           "https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.1/dialog-polyfill.min.css",
+          "css",
           host
         ),
-        _fetchScript(
+        _fetchResource(
           "https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.1/dialog-polyfill.min.js",
+          "js",
           host
         ),
       ]);
@@ -203,39 +205,41 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _fetchScript = async function _fetchScript(url, host) {
+  const _fetchResource = async function _fetchResource(url, type, host) {
     return new Promise((resolve, reject) => {
-      let link = document.createElement("script");
-      link.type = "text/javascript";
-      link.onload = () => {
-        resolve(link);
-      };
-      link.onerror = () => {
-        reject(link);
-      };
+      let element, elementType, props;
 
-      link.src = url;
+      if (type === "js") {
+        elementType = "script";
+        props = {
+          type: "text/javascript",
+          src: url,
+        };
+      } else if (type === "css") {
+        elementType = "link";
+        props = {
+          type: "text/css",
+          rel: "stylesheet",
+          href: url,
+        };
+      }
 
-      document.head.appendChild(link);
-    });
-  };
+      if (elementType) {
+        let element = document.createElement(elementType);
 
-  /*-----------------------------------------------------------------------------------------*/
+        element.onload = () => {
+          resolve(element);
+        };
+        element.onerror = () => {
+          reject(element);
+        };
 
-  const _fetchStyle = async function _fetchStyle(url, host) {
-    return new Promise((resolve, reject) => {
-      let link = document.createElement("link");
-      link.type = "text/css";
-      link.rel = "stylesheet";
-      link.onload = () => {
-        resolve(link);
-      };
-      link.onerror = () => {
-        reject(link);
-      };
-      link.href = url;
+        for (const property in props) {
+          element[property] = props[property];
+        }
 
-      document.head.appendChild(link);
+        document.head.appendChild(element);
+      }
     });
   };
 
