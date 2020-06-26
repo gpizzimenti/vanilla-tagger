@@ -681,6 +681,13 @@
         popup.appendChild(closeButton);
       }
 
+      popup.addEventListener("click", function (e) {
+        _throwEvent(host, "popupClick", {
+          tag: tag,
+          path: e.path,
+        });
+      });
+
       host.context.wrapper.insertBefore(popup, element.nextSibling); //insertAfter
 
       requestAnimationFrame(function () {
@@ -840,20 +847,13 @@
         eventNames.split(" ").forEach(function (evt, index) {
           let eventName = evt,
             eventNameToThrow =
-              eventName.charAt(0).toUpperCase() + eventName.slice(1);
-
-          _getPopupElement(host, tag).addEventListener(eventName, function (e) {
-            _throwEvent(host, "popup" + eventNameToThrow, {
-              tag: tag,
-              path: e.path,
-            });
-          });
+              "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
 
           element.addEventListener(eventName, function (e) {
             e.preventDefault();
             e.stopPropagation();
 
-            _throwEvent(host, "tag" + eventNameToThrow, tag);
+            _throwEvent(host, eventNameToThrow, tag);
 
             if (eventName === "click" || eventName === "mouseover") {
               requestAnimationFrame(function () {
