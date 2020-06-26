@@ -140,7 +140,14 @@
 
     if (!host.classList.contains("navigation-rendered")) {
       host.addEventListener("click", function (event) {
-        _removeHighlight(host);
+        if (
+          event.path &&
+          event.path.length &&
+          event.path.length > 0 &&
+          event.path[0] &&
+          event.path[0].classList.contains("img-tagged")
+        )
+          _removeHighlight(host);
       });
 
       host.addEventListener("VanillaTagger:tagClick", function (event) {
