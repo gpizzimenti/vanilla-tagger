@@ -165,11 +165,13 @@
         _fetchResource(
           "https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.1/dialog-polyfill.min.css",
           "css",
+          "dialog-polyfill-css",
           host
         ),
         _fetchResource(
           "https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.1/dialog-polyfill.min.js",
           "js",
+          "dialog-polyfill-js",
           host
         ),
       ]);
@@ -205,19 +207,26 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _fetchResource = async function _fetchResource(url, type, host) {
+  const _fetchResource = async function _fetchResource(url, type, id, host) {
     return new Promise((resolve, reject) => {
       let element, elementType, props;
+
+      if (id) {
+        const res = document.getElementById(id);
+        if (res) return true;
+      }
 
       if (type === "js") {
         elementType = "script";
         props = {
+          id: id,
           type: "text/javascript",
           src: url,
         };
       } else if (type === "css") {
         elementType = "link";
         props = {
+          id: id,
           type: "text/css",
           rel: "stylesheet",
           href: url,
