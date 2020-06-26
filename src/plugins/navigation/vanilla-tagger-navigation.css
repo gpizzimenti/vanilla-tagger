@@ -35,8 +35,8 @@
   position: relative;
 }
 
-.vtagger-navcontainer[title]:before {
-  content: attr(title);
+.vtagger-navcontainer[data-title]:before {
+  content: attr(data-title);
   display: block;
   margin: 0 0 5px 0;
   font-family: "Source Sans Pro", sans-serif;

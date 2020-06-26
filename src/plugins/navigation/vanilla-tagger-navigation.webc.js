@@ -10,7 +10,7 @@
       return [
         "src",
         "placeholder",
-        "title",
+        "data-title",
         "data-tags",
         "data-theme",
         "data-theme-text",
@@ -44,12 +44,12 @@
     /*---------------------------------------------------------------------------------------*/
 
     get title() {
-      return this.getAttribute("title");
+      return this.dataset.title;
     }
     /*---------------------------------------------------------------------------------------*/
 
     set title(value) {
-      this.setAttribute("title", value);
+      this.dataset.title = value;
     }
 
     /*---------------------------------------------------------------------------------------*/
@@ -108,8 +108,8 @@
 
       navigation = document.createElement("ol");
       navigation.classList.add("vanilla-tagger-navigation");
-      if (host.title) {
-        navigation.title = host.title;
+      if (host.dataset.title) {
+        navigation.dataset.title = host.dataset.title;
       }
 
       host.context.navigation = navigation;
@@ -119,8 +119,8 @@
           container.innerHTML = "";
           container.appendChild(navigation);
 
-          if (host.title) {
-            container.title = host.title;
+          if (host.dataset.title) {
+            container.dataset.title = host.dataset.title;
           }
         });
       }
