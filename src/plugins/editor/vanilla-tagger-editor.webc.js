@@ -325,6 +325,13 @@
     if (type === "dot" && event.type === "click") {
       let tag = _addDot(host, event.offsetX, event.offsetY);
       _openEditDialog(host, tag);
+    } else if (type === "dot" && event.type === "touchstart") {
+      let tag = _addDot(
+        host,
+        event.touches[0].clientX,
+        event.touches[0].clientY
+      );
+      _openEditDialog(host, tag);
     }
   };
 
