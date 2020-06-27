@@ -869,7 +869,7 @@
             if (tag["on" + eventNameNormalized]) {
               //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for well known security concerns
 
-              const fname = tag["on" + eventName],
+              const fname = tag["on" + eventNameNormalized],
                 f = window[fname];
 
               if (f && typeof f === "function") f(tag);
