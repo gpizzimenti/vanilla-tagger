@@ -481,7 +481,7 @@
 
       _attachPopup(host, element, tag);
 
-      _attachEvents("click mouseover mouseout", host, element, tag);
+      _attachEvents("click touchstart mouseover mouseout", host, element, tag);
 
       _throwEvent(host, "tagAdded", tag);
     } catch (err) {
@@ -682,6 +682,7 @@
       }
 
       popup.addEventListener("click", function (e) {
+        debugger;
         _throwEvent(host, "popupClick", {
           tag: tag,
           path: e.path || (e.composedPath && e.composedPath()),
@@ -846,8 +847,11 @@
       if (eventNames) {
         eventNames.split(" ").forEach(function (evt, index) {
           let eventName = evt,
+            eventNameNormalized = evt === "touchstart" ? "click" : eventName,
             eventNameToThrow =
-              "tag" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+              "tag" +
+              eventNameNormalized.charAt(0).toUpperCase() +
+              eventNameNormalized.slice(1);
 
           element.addEventListener(eventName, function (e) {
             e.preventDefault();
@@ -855,15 +859,15 @@
 
             _throwEvent(host, eventNameToThrow, tag);
 
-            if (eventName === "click" || eventName === "mouseover") {
+            if (eventNameNormalized === "click" || eventName === "mouseover") {
               requestAnimationFrame(function () {
                 _repositionPopup(host, tag);
               });
             }
 
-            if (eventName === "click") tag.toggleClass("toggled");
+            if (eventNameNormalized === "click") tag.toggleClass("toggled");
 
-            if (tag["on" + eventName]) {
+            if (tag["on" + eventNameNormalized]) {
               //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for well known security concerns
 
               const fname = tag["on" + eventName],
