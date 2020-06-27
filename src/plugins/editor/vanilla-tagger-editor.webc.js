@@ -328,8 +328,8 @@
     } else if (type === "dot" && event.type === "touchstart") {
       let tag = _addDot(
         host,
-        event.touches[0].clientX,
-        event.touches[0].clientY
+        event.touches[0].pageX - event.touches[0].target.offsetLeft,
+        event.touches[0].pageY - event.touches[0].target.offsetTop
       );
       _openEditDialog(host, tag);
     }
