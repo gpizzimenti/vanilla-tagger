@@ -139,21 +139,7 @@
     host.tags = tagsModified;
 
     if (!host.classList.contains("navigation-rendered")) {
-      host.addEventListener("click", function (event) {
-        if (
-          event.path &&
-          event.path.length &&
-          event.path.length > 0 &&
-          event.path[0] &&
-          event.path[0].classList.contains("img-tagged")
-        )
-          _removeHighlight(host);
-      });
-
-      host.addEventListener("VanillaTagger:tagClick", function (event) {
-        let tag = event.detail;
-        _toggleTag(host, tag);
-      });
+      _attachEvents(host);
 
       host.classList.add("navigation-rendered");
     }
@@ -177,6 +163,26 @@
     });
 
     navigation.appendChild(nav);
+  };
+
+  /*-----------------------------------------------------------------------------------------*/
+
+  const _attachEvents = function _attachEvents(host) {
+    host.addEventListener("click", function (event) {
+      if (
+        event.path &&
+        event.path.length &&
+        event.path.length > 0 &&
+        event.path[0] &&
+        event.path[0].classList.contains("img-tagged")
+      )
+        _removeHighlight(host);
+    });
+
+    host.addEventListener("VanillaTagger:tagClick", function (event) {
+      let tag = event.detail;
+      _toggleTag(host, tag);
+    });
   };
 
   /*-----------------------------------------------------------------------------------------*/
