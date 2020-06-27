@@ -169,12 +169,15 @@
 
   const _attachEvents = function _attachEvents(host) {
     host.addEventListener("click", function (event) {
+      const eventPath =
+        event.path || (event.composedPath && event.composedPath());
+
       if (
-        event.path &&
-        event.path.length &&
-        event.path.length > 0 &&
-        event.path[0] &&
-        event.path[0].classList.contains("img-tagged")
+        eventPath &&
+        eventPath.length &&
+        eventPath.length > 0 &&
+        eventPath[0] &&
+        eventPath[0].classList.contains("img-tagged")
       )
         _removeHighlight(host);
     });

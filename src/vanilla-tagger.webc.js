@@ -684,7 +684,7 @@
       popup.addEventListener("click", function (e) {
         _throwEvent(host, "popupClick", {
           tag: tag,
-          path: e.path,
+          path: e.path || (e.composedPath && e.composedPath()),
         });
       });
 
