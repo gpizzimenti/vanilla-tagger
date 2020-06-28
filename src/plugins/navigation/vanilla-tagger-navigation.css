@@ -1,5 +1,4 @@
 :root {
-  --color-fg-beweb: 132, 117, 65;
   --shadow-navigator: 0 2px 19px 0 rgba(0, 0, 0, 0.18);
   --scrollbarBG: 255, 255, 255;
   --scrollbarFG: 127, 127, 127;
@@ -16,14 +15,20 @@
 
 .vtagger-imgcontainer {
   z-index: 2;
+  width: 100%;  
+  max-width: 100%;  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .vtagger-navcontainer {
   z-index: 1;
-  margin: 0;
-  padding: 0;
+  max-width: 100%;
   width: 100%;
+  margin: 0;
   padding: 15px 0;
+  box-sizing: border-box;
 
   background-color: rgba(255, 255, 255, 1);
   border: solid 1px rgba(255, 255, 255, 1);
@@ -44,12 +49,13 @@
   font-size: 15.2px;
   letter-spacing: 0.11px;
   text-align: center;
-  color: rgba(var(--color-fg-beweb), 1);
+  color: red;
 }
 
 .vanilla-tagger-navigation {
   margin: 0 0 0 15px;
   padding: 0;
+  box-sizing: border-box;
 }
 
 .vtagger-navcontainer.vt-inner {
@@ -67,10 +73,12 @@
 .vanilla-tagger-navigation li {
   display: flex;
   padding: 15px 5px;
+  margin: 0;
+  box-sizing: border-box;
   cursor: pointer;
   list-style: none;
   vertical-align: middle;
-  line-height: 30px;
+  line-height: 25px;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 15px;
   position: relative;
@@ -85,16 +93,20 @@
 
   display: inline-block;
   position: relative;
+  margin: 0;
+  padding: 5px;
   margin-right: 10px;
+  box-sizing: border-box;
+
   border: solid 2px #ccc;
   border-radius: 200px;
   font-size: 14px;
-  line-height: 16px;
-  padding: 5px;
-  width: 15px;
-  height: 15px;
-  min-width: 15px;
-  min-height: 15px;
+  line-height: 12px;
+
+  width: 25px;
+  height: 25px;
+  min-width: 25px;
+  min-height: 25px;
   text-align: center;
   vertical-align: middle;
 }
@@ -103,10 +115,14 @@
   content: " ";
   display: block;
   position: absolute;
+  border: none;
   border-left: solid 2px red;
-  left: 19px;
-  top: 48px;
-  height: calc(100% - 38px);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  left: 17px;
+  top: 42px;
+  height: calc(100% - 30px);
 }
 
 .vanilla-tagger-navigation li:last-of-type::after {
@@ -156,6 +172,7 @@
 
   .vtagger-navcontainer.vt-inner {
     width: 300px;
+    min-width: 300px;
     margin: 20px 0 0 -320px;
     box-shadow: var(--shadow-navigator);
   }
