@@ -129,7 +129,7 @@
     host.tags.forEach(function (tag) {
       let popup = tag.popup;
 
-      popup.showOn = "hover;";
+      popup.showOn = "hover";
 
       tagsModified.push(tag);
 
