@@ -159,7 +159,7 @@
     nav.innerHTML = tag.caption;
 
     nav.addEventListener("click", function (event) {
-      _toggleTag(host, tag);
+      _toggleTag(host, tag, true);
     });
 
     navigation.appendChild(nav);
@@ -190,7 +190,7 @@
 
   /*-----------------------------------------------------------------------------------------*/
 
-  const _toggleTag = function _toggleTag(host, tag) {
+  const _toggleTag = function _toggleTag(host, tag, scrollIntoView) {
     let options = {
       state: false,
       exclusive: true,
@@ -218,7 +218,7 @@
 
     options.tag = tag;
     options.state = true;
-
+    if (scrollIntoView) options.scrollIntoView = true;
     host.highlightTag(options);
   };
 

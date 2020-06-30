@@ -819,11 +819,13 @@
           (options.highlightedClasses ? " " + options.highlightedClasses : "")
       );
 
-      _getElement(host, options.tag).scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-        inline: "nearest",
-      });
+      if (options.scrollIntoView) {
+        _getElement(host, options.tag).scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+          inline: "nearest",
+        });
+      }
 
       requestAnimationFrame(function () {
         _repositionPopup(host, options.tag);
