@@ -857,12 +857,6 @@
           element.addEventListener(eventName, function (e) {
             _throwEvent(host, eventNameToThrow, tag);
 
-            if (eventNameNormalized === "click" || eventName === "mouseover") {
-              requestAnimationFrame(function () {
-                _repositionPopup(host, tag);
-              });
-            }
-
             if (
               eventNameNormalized === "click" &&
               element.getAttribute("href")
@@ -875,6 +869,12 @@
               if (eventNameNormalized === "click") {
                 tag.toggleClass("toggled");
               }
+            }
+
+            if (eventNameNormalized === "click" || eventName === "mouseover") {
+              requestAnimationFrame(function () {
+                _repositionPopup(host, tag);
+              });
             }
 
             if (tag["on" + eventNameNormalized]) {
