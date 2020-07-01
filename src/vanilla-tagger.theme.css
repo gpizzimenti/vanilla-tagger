@@ -23,6 +23,13 @@
 
   --dot-size: 44px;
   --dot-size-small: 22px;
+
+  --dot-shape-marker-translateX: -20px;
+  --dot-shape-marker-translateY: -40px;
+
+  --dot-shape-marker-small-translateX: -10px;
+  --dot-shape-marker-small-translateY: -20px;
+
   --index-font-size: 18px;
   --index-font-size-small: 10px;
 
@@ -339,6 +346,15 @@
   top: calc(40% - var(--index-font-size) / 2);
 }
 
+/* the tip of the marker is on the tag coords */
+.shape-marker,
+.shape-marker-full {
+  transform: translate(
+    var(--dot-shape-marker-translateX),
+    var(--dot-shape-marker-translateY)
+  );
+}
+
 /*---------------------------- MEDIA QUERIES (sort of....) ---------------------------- */
 
 .dot.small,
@@ -365,6 +381,17 @@
 
 .small-format .hotspot.responsive:after {
   font-size: var(--hotspot-font-size-small);
+}
+
+/* the tip of the marker is on the tag coords */
+.shape-marker.small,
+.shape-marker-full.small,
+.small-format .shape-marker.responsive,
+.small-format .shape-marker-full.responsive {
+  transform: translate(
+    var(--dot-shape-marker-small-translateX),
+    var(--dot-shape-marker-small-translateY)
+  );
 }
 
 /*---------------------------- POPUPS---------------------------- */
