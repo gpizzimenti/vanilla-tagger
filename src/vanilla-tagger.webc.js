@@ -855,9 +855,6 @@
               eventNameNormalized.slice(1);
 
           element.addEventListener(eventName, function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
             _throwEvent(host, eventNameToThrow, tag);
 
             if (eventNameNormalized === "click" || eventName === "mouseover") {
@@ -866,7 +863,19 @@
               });
             }
 
-            if (eventNameNormalized === "click") tag.toggleClass("toggled");
+            if (
+              eventNameNormalized === "click" &&
+              element.getAttribute("href")
+            ) {
+              return true;
+            } else {
+              e.preventDefault();
+              e.stopPropagation();
+
+              if (eventNameNormalized === "click") {
+                tag.toggleClass("toggled");
+              }
+            }
 
             if (tag["on" + eventNameNormalized]) {
               //eval(tag["on"+eventName])(tag); //you wish! ..nah... not really possible for well known security concerns
